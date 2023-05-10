@@ -45,6 +45,14 @@ const userSchema = new mongoose.Schema(
     // emailVerificationExpiry: Date,
     // emailVerified: { type: Boolean },
     subscription: { type: mongoose.Schema.ObjectId, ref: 'plan' },
+    chats: [
+      {
+        name: { type: String, required: [true, 'Chats must have a name'] },
+        lastUpdatedAt: { type: Date, default: Date.now() },
+        chatHistory: { type: [[String]], select: false },
+        vectorName: { type: String, required: [true, 'Chat must have a vectorName'] },
+      },
+    ],
     subscriptionUpdatedAt: Date,
     tokenLimit: Number,
     signedUpWithGoogle: Boolean,
@@ -164,6 +172,7 @@ userSchema.pre(/AndUpdate$/, async function (next) {
 
 userSchema.pre(/^find/, function (next) {
   this.populate('subscription');
+  // this.populate('chat');
 
   next();
 });
@@ -217,6 +226,12 @@ userSchema.methods.isPassChangedAfter = function (date) {
   if (!this.passwordChangedAt) return false;
 
   return this.passwordChangedAt / 1000 > date;
+};
+
+userSchema.methods.updateChatModifiedDate = async function (id) {
+  this.chats.id(id).lastUpdatedAt = Date.now();
+
+  await this.save({ validateBeforeSave: false });
 };
 
 const User = mongoose.model('User', userSchema);

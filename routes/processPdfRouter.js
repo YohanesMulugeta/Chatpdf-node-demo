@@ -9,6 +9,6 @@ router.use(authController.protect, pdfController.checkTokenLimit);
 
 router.route('/processpdf').post(pdfController.uploadPdf, pdfController.processDocument);
 
-router.route('/chat/').post(pdfController.chat);
+router.route('/chat/:chatId').post(pdfController.chat);
 
 module.exports = router;

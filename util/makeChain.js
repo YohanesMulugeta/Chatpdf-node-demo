@@ -8,10 +8,10 @@ Chat History:
 Follow Up Input: {question}
 Standalone question:`;
 
-const QA_PROMPT = `Instructions: Compose a comprehensive reply to the question using the context given.
-If the context mention multiple subjects with the same name, create separate answers for each.
-Only include information found in the context and don't add any additional information.
-If the question does not relate to the context or the previous question and answer, simply state "I am only here to answer questions related to the document". Ignore outlier context which has nothing to do with the question.
+const QA_PROMPT = `Instructions: Compose a comprehensive reply to the question using the document given.
+If the document mention multiple subjects with the same name, create separate answers for each.
+Only include information found in the document and don't add any additional information.
+If the question does not relate to the document or the previous question and answer, simply state "I am only here to answer questions related to the document". Ignore outlier document which has nothing to do with the question.
 Only answer what is asked. The answer should be short and concise. Answer step-by-step.:
 {context}
 

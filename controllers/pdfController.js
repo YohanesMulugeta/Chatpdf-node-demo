@@ -10,6 +10,7 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 const User = require('../model/userModel');
+
 const { pineconeClient, loadPdf } = require('../util/ReadAndFormatPdf');
 const makeChain = require('../util/makeChain');
 const catchAsync = require('../util/catchAsync');
@@ -23,6 +24,7 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const name = `document-${Date.now()}.pdf`;
+    req.orignalName = file.originalname.replace('.pdf', '');
     req.fileName = name;
 
     // console.log(req.fileName);
@@ -49,18 +51,27 @@ exports.processDocument = catchAsync(async function (req, res, next) {
 
   const fileNameOnPine = await loadPdf(file, req.fileName);
 
-  res.status(200).json({ status: 'success', fileName: fileNameOnPine });
+  // store the new chat
+  const user = await User.findById(req.user._id);
+  user.chats.push({ name: req.orignalName.trim(), vectorName: fileNameOnPine });
+  await user.save({ validateBeforeSave: false });
+
+  res.status(200).json({
+    status: 'success',
+    docName: fileNameOnPine,
+    chatName: req.originalname.trim(),
+  });
 });
 
 // --------------------------- Chat
 exports.chat = catchAsync(async function (req, res, next) {
-  const { question, history, nameSpace } = req.body;
+  const { chatId } = req.params;
+  const { question, history } = req.body;
 
   if (!question || question.trim() === '')
     return next(new AppError('You have to provide question!', 400));
 
-  if (!nameSpace) return next(new AppError('Chat has to have nameSpace.', 400));
-
+  const nameSpace = await req.user.chats.id(chatId).vectorName;
   // OPEN-AI recommendation to replace new lines with space
   const sanitizedQuestion = question.replace('/n', ' ').trim();
   const pineconeIndex = pineconeClient.Index(process.env.PINECONE_INDEX_NAME);
@@ -85,6 +96,8 @@ exports.chat = catchAsync(async function (req, res, next) {
     chat_history: history || [],
   });
 
+  req.user.chats.id(chatId).chatHistory.push([question, response.text]);
+  await req.user.updateChatModifiedDate(chatId);
   res.status(200).json({ status: 'success', data: { response } });
 });
 
