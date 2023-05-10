@@ -7,6 +7,7 @@ const { OpenAIEmbeddings } = require('langchain/embeddings/openai');
 const AppError = require('./AppError');
 
 const client = new PineconeClient();
+exports.pineconeClient = client;
 
 (async () => {
   await client.init({
@@ -16,11 +17,10 @@ const client = new PineconeClient();
 
   console.log('success on initializing pincone client');
 })();
-
 // const pineconeIndex = client.Index(process.env.PINECONE_INDEX);
 
-async function loadPdf(file, isFile, check = true) {
-  // TODO: split into meaningful chuncks
+exports.loadPdf = async function loadPdf(file, isFile, check = true) {
+  //  split into meaningful chuncks
   const loader = new PDFLoader(`${__dirname}/../temp/uploads/${file}`, {
     splitPages: false,
   });
@@ -37,13 +37,13 @@ async function loadPdf(file, isFile, check = true) {
 
   const splitted = await spiltText(text, check);
 
-  // TODO: store in the pinecone
+  //  store in the pinecone
   const fileNameOnPine = await storeToPinecone(splitted);
 
-  // TODO: return the pinecone name_space for the vectors
+  //  return the pinecone name_space for the vectors
   return fileNameOnPine;
   // if (!isFile) return spiltText(file, check);
-}
+};
 
 async function spiltText(text, check = true) {
   if (check)
@@ -81,4 +81,3 @@ function removeDuplicates(text) {
 }
 
 // ERRORS EMPITY DOCUMENT THAT IS DOCS = []
-module.exports = loadPdf;

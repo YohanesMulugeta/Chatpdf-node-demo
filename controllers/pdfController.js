@@ -1,12 +1,17 @@
 const multer = require('multer');
+const { PineconeStore } = require('langchain/vectorstores/pinecone');
+const { VectorDBQAChain } = require('langchain/chains');
 const { Configuration, OpenAIApi } = require('openai');
+const { OpenAI } = require('langchain/llms/openai');
+const { OpenAIEmbeddings } = require('langchain/embeddings/openai');
 const configuration = new Configuration({
-  apiKey: process.env.GPT_KEY2,
+  apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
 const User = require('../model/userModel');
-const loadPdf = require('../util/ReadAndFormatPdf');
+const { pineconeClient, loadPdf } = require('../util/ReadAndFormatPdf');
+const makeChain = require('../util/makeChain');
 const catchAsync = require('../util/catchAsync');
 const multerFilter = require('../util/multerFilter');
 const AppError = require('../util/AppError');
@@ -43,43 +48,44 @@ exports.processDocument = catchAsync(async function (req, res, next) {
   const file = req.fileName || req.body.text;
 
   const fileNameOnPine = await loadPdf(file, req.fileName);
-  //   pased and formated is an array of object what we want is .pageContent
-
-  //   TODO: if the last chunck is less than or equal to length of 300 combine it with the last one
-
-  // req.formated = parsedAndFormated;
 
   res.status(200).json({ status: 'success', fileName: fileNameOnPine });
-  // next();
 });
 
-// --------------------------- Generate Compliance Report
-exports.generateReport = catchAsync(async function (req, res, next) {
-  // const responses = [];
-  const { formated } = req;
-  const { country, name, product, audiance, dissemination, intent } = req.body;
+// --------------------------- Chat
+exports.chat = catchAsync(async function (req, res, next) {
+  const { question, history, nameSpace } = req.body;
 
-  const summaryPromptPrefix =
-    'The followings are responses made by you for diffrent portions of same document, now I want you to remove if there is any suggestions made and then create the combined and summerised and short form of the responses. ';
+  if (!question || question.trim() === '')
+    return next(new AppError('You have to provide question!', 400));
 
-  const systemContent =
-    '"Assistant is an intelligent chatbot designed to help users to know the part of their document is in compliance with The ABPI CODE of Practice for Pharmaceutical Industry 2021. Instructions: - generate compliance report if only the text can be guided by ABPI. - If you are unsure of an answer, you can say "I don\'t know" or "I\'m not sure" ';
+  if (!nameSpace) return next(new AppError('Chat has to have nameSpace.', 400));
 
-  const userContentPreFix = `Document name: ${name}, Country: ${country}, Material type: press-material, Audience: ${audiance}, Intended Use: ${intent}, Method of Dessimination: ${dissemination} `;
-  const userContentPostFix =
-    ' is this text in compliance with The ADPI CODE of Practice for Pharmaceutical Industry 2021. Instructions: - generate compliance report if only the text can be guided by ABPI. - If you are unsure of an answer, you can say "I don\'t know" or "I\'m not sure. And Dont include your suggetions';
-  // const addInf = `Document name: ${name}, Country: ${country}, Material type: press-material, Audience: ${audiance}, Intended Use: ${intent}, Method of Dessimination: ${dissemination} `;
-  const reportFrom = {
-    formated,
-    userContentPreFix,
-    userContentPostFix,
-    systemContent,
-    summaryPromptPrefix,
-    res,
-    user: req.user,
-  };
+  // OPEN-AI recommendation to replace new lines with space
+  const sanitizedQuestion = question.replace('/n', ' ').trim();
+  const pineconeIndex = pineconeClient.Index(process.env.PINECONE_INDEX_NAME);
 
-  createComplianceReport(reportFrom);
+  // vectore store
+  const vectorStore = await PineconeStore.fromExistingIndex(new OpenAIEmbeddings(), {
+    pineconeIndex,
+    namespace: nameSpace,
+  });
+
+  // const model = new OpenAI({ modelName: 'gpt-3.5-turbo', temperature: 0.3 });
+  // const chain = VectorDBQAChain.fromLLM(model, vectorStore, {
+  //   k: 1,
+  //   returnSourceDocuments: true,
+  // });
+  // const response = await chain.call({ query: sanitizedQuestion });
+
+  const chain = makeChain(vectorStore);
+  //Ask a question using chat history
+  const response = await chain.call({
+    question: sanitizedQuestion,
+    chat_history: history || [],
+  });
+
+  res.status(200).json({ status: 'success', data: { response } });
 });
 
 exports.checkReference = catchAsync(async function (req, res, next) {

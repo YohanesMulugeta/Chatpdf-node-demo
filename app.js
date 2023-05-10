@@ -84,7 +84,7 @@ app.use(mongoSanitize({ replaceWith: '_' }));
 app.use(xss());
 
 app.use('/api/v1/users', userRouter);
-app.use('/api/v1/processpdf', pdfRouter);
+app.use('/api/v1/pdf', pdfRouter);
 app.use('/api/v1/plans', planRouter);
 // app.use('/', viewRouter);
 

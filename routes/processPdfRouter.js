@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.use(authController.protect, pdfController.checkTokenLimit);
 
-router.route('/').post(pdfController.uploadPdf, pdfController.processDocument);
+router.route('/processpdf').post(pdfController.uploadPdf, pdfController.processDocument);
+
+router.route('/chat/').post(pdfController.chat);
 
 module.exports = router;
