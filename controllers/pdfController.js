@@ -42,14 +42,15 @@ exports.checkTokenLimit = function (req, res, next) {
 exports.processDocument = catchAsync(async function (req, res, next) {
   const file = req.fileName || req.body.text;
 
-  const parsedAndFormated = await loadPdf(file, req.fileName);
+  const fileNameOnPine = await loadPdf(file, req.fileName);
   //   pased and formated is an array of object what we want is .pageContent
 
   //   TODO: if the last chunck is less than or equal to length of 300 combine it with the last one
 
-  req.formated = parsedAndFormated;
+  // req.formated = parsedAndFormated;
 
-  next();
+  res.status(200).json({ status: 'success', fileName: fileNameOnPine });
+  // next();
 });
 
 // --------------------------- Generate Compliance Report

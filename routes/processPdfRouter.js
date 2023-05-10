@@ -7,6 +7,6 @@ const router = express.Router();
 
 router.use(authController.protect, pdfController.checkTokenLimit);
 
-
+router.route('/').post(pdfController.uploadPdf, pdfController.processDocument);
 
 module.exports = router;
