@@ -427,7 +427,7 @@ exports.updatePassword = catchAsync(async function (req, res, next) {
 // --------------------------------- GET ME
 
 exports.getMe = catchAsync(async function (req, res, next) {
-  const { user } = req;
+  const user = await User.findById(req.user._id).select('+chats.chatHistory');
 
   user.password = undefined;
   user.passwordChangedAt = undefined;

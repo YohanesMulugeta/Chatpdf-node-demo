@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
-const Plan = require('../model/planModel');
+const chatsSchema = require('./chatsSchema');
+const Plan = require('./planModel');
 
 const userSchema = new mongoose.Schema(
   {
@@ -45,14 +46,7 @@ const userSchema = new mongoose.Schema(
     // emailVerificationExpiry: Date,
     // emailVerified: { type: Boolean },
     subscription: { type: mongoose.Schema.ObjectId, ref: 'plan' },
-    chats: [
-      {
-        name: { type: String, required: [true, 'Chats must have a name'] },
-        lastUpdatedAt: { type: Date, default: Date.now() },
-        chatHistory: { type: [[String]], select: false },
-        vectorName: { type: String, required: [true, 'Chat must have a vectorName'] },
-      },
-    ],
+    chats: [chatsSchema],
     subscriptionUpdatedAt: Date,
     tokenLimit: Number,
     signedUpWithGoogle: Boolean,
