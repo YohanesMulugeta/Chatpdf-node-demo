@@ -25,7 +25,7 @@ const storage = multer.diskStorage({
   filename: function (req, file, cb) {
     const name = `document-${Date.now()}.pdf`;
     req.fileName = name;
-
+    req.originalName = file.originalname || req.originalname;
     // console.log(req.fileName);
     cb(null, name);
   },
@@ -50,18 +50,21 @@ exports.toPinecone = catchAsync(async function (req, res, next) {});
 // ----------------------- PROCESS pdf
 exports.processDocument = catchAsync(async function (req, res, next) {
   const file = req.fileName || req.body.text;
+  const originalName =
+    req.originalName?.trim() || req.body.originalName || `document-${Date.now()}`;
 
   const fileNameOnPine = await loadPdf(file, req.fileName);
 
   // store the new chat
-  const user = await User.findById(req.user._id);
-  user.chats.push({ name: req.orignalName.trim(), vectorName: fileNameOnPine });
-  await user.save({ validateBeforeSave: false });
+  const user = await User.findById(req.user._id).select('+chats.chatHistory');
+  user.chats.push({ name: originalName, vectorName: fileNameOnPine });
+  const updatedUser = await user.save({ validateBeforeSave: false });
 
   res.status(200).json({
     status: 'success',
     docName: fileNameOnPine,
-    chatTitle: req.fileName.trim(),
+    chatTitle: originalName,
+    chatId: updatedUser.chats.slice(-1)[0]._id,
   });
 });
 
@@ -107,8 +110,8 @@ exports.chat = catchAsync(async function (req, res, next) {
 // ------------------- delete chat
 exports.deleteChat = catchAsync(async function (req, res, next) {
   const { chatId } = req.params;
-  const { user } = req;
-  const { vectorName } = user.chats.id(chatId);
+  const user = await User.findById(req.user._id).select('+chats.chatHistory');
+  const vectorName = user.chats.id(chatId)?.vectorName;
   const pineconeIndex = pineconeClient.Index(process.env.PINECONE_INDEX_NAME);
 
   const index = user.chats.findIndex((chat) => {
@@ -116,8 +119,7 @@ exports.deleteChat = catchAsync(async function (req, res, next) {
   });
 
   pineconeIndex.delete1({ deleteAll: true, namespace: vectorName });
-
-  user.chats.splice(index, 1);
+  if (index !== -1) user.chats.splice(index, 1);
   await user.save({ validateBeforeSave: false });
 
   res.status(203).json({ message: 'success' });

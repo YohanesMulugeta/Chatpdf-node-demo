@@ -20,20 +20,25 @@ exports.pineconeClient = client;
 // const pineconeIndex = client.Index(process.env.PINECONE_INDEX);
 
 exports.loadPdf = async function loadPdf(file, isFile, check = true) {
+  let text;
   //  split into meaningful chuncks
-  const loader = new PDFLoader(`${__dirname}/../temp/uploads/${file}`, {
-    splitPages: false,
-  });
+  if (isFile) {
+    const loader = new PDFLoader(`${__dirname}/../temp/uploads/${file}`, {
+      splitPages: false,
+    });
 
-  // console.log('Loading ....');
-  const docs = await loader.load();
-  if (docs.length === 0)
-    throw new AppError(
-      'Please Provide Readable or Selectable pdf. Please Try Agan!',
-      400
-    );
+    // console.log('Loading ....');
+    const docs = await loader.load();
+    if (docs.length === 0)
+      throw new AppError(
+        'Please Provide Readable or Selectable pdf. Please Try Agan!',
+        400
+      );
 
-  const text = removeDuplicates(docs[0].pageContent);
+    text = removeDuplicates(docs[0].pageContent);
+  } else {
+    text = removeDuplicates(file);
+  }
 
   const splitted = await spiltText(text, check);
 
