@@ -59,14 +59,14 @@ exports.processDocument = catchAsync(async function (req, res, next) {
   res.status(200).json({
     status: 'success',
     docName: fileNameOnPine,
-    chatName: req.originalname.trim(),
+    chatName: req.originalName.trim(),
   });
 });
 
 // --------------------------- Chat
 exports.chat = catchAsync(async function (req, res, next) {
   const { chatId } = req.params;
-  const { question, history } = req.body;
+  const { question } = req.body;
 
   if (!question || question.trim() === '')
     return next(new AppError('You have to provide question!', 400));
@@ -82,17 +82,40 @@ exports.chat = catchAsync(async function (req, res, next) {
     namespace: nameSpace,
   });
 
+  // Get chat history
+  const user = await User.findById(req.user._id).select('+chats.chatHistory');
+  const chatHistory = user.chats.id(chatId).chatHistory.slice(-5);
+
   const chain = makeChain(vectorStore);
   //Ask a question using chat history
   const response = await chain.call({
     question: sanitizedQuestion,
-    chat_history: history || [],
+    chat_history: chatHistory,
   });
 
   // Update User
-  const user = await User.findById(req.user._id).select('+chats.chatHistory');
-  user.chats.id(chatId).chatHistory.push([question, response.text]);
-  await user.updateChatModifiedDate(chatId);
+  user.chats
+    .id(chatId)
+    .chatHistory.push([`Question: ${question}`, `Answer: ${response.text}`]);
+  user.updateChatModifiedDate(chatId);
 
   res.status(200).json({ status: 'success', data: { response } });
+});
+
+exports.deleteChat = catchAsync(async function (req, res, next) {
+  const { chatId } = req.params;
+  const { user } = req;
+  const { vectorName } = user.chats.id(chatId);
+  const pineconeIndex = pineconeClient.Index(process.env.PINECONE_INDEX_NAME);
+
+  const index = user.chats.findIndex((chat) => {
+    return chat.id === chatId;
+  });
+
+  pineconeIndex.delete1({ deleteAll: true, namespace: vectorName });
+
+  user.chats.splice(index, 1);
+  await user.save({ validateBeforeSave: false });
+
+  res.status(203).json({ message: 'success' });
 });

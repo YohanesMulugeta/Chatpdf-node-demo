@@ -11,4 +11,6 @@ router.route('/processpdf').post(pdfController.uploadPdf, pdfController.processD
 
 router.route('/chat/:chatId').post(pdfController.chat);
 
+router.route('/:chatId').delete(pdfController.deleteChat);
+
 module.exports = router;

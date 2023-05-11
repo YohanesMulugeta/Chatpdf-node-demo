@@ -8,24 +8,24 @@ Chat History:
 Follow Up Input: {question}
 Standalone question:`;
 
-const QA_PROMPT = `Instructions: Compose a comprehensive reply to the question using the document given.
-If the document mention multiple subjects with the same name, create separate answers for each.
-Only include information found in the document and don't add any additional information.
-If the question does not relate to the document or the previous question and answer, simply state "I am only here to answer questions related to the document". Ignore outlier document which has nothing to do with the question.
-Only answer what is asked. The answer should be short and concise. Answer step-by-step.:
-{context}
-
-Question: {question}
-Helpful answer in markdown:`;
-
-// const QA_PROMPT = `You are a helpful AI assistant. Use the following pieces of context to answer the question at the end.
-// If you don't know the answer, just say you don't know. DO NOT try to make up an answer.
-// If the question is not related to the context, politely respond that you are tuned to only answer questions that are related to the context provided and generate what the context is about.
-
+// const QA_PROMPT = `Instructions: Compose a comprehensive reply to the question using the document given.
+// If the document mention multiple subjects with the same name, create separate answers for each.
+// Only include information found in the document and don't add any additional information.
+// If the question does not relate to the document or the previous question and answer, replay politely that you are here to help with only questions related to the document. Ignore outlier document which has nothing to do with the question.
+// Only answer what is asked. The answer should be short and concise. Answer step-by-step.:
 // {context}
 
 // Question: {question}
 // Helpful answer in markdown:`;
+
+const QA_PROMPT = `You are a helpful AI assistant. Use the following pieces of document to answer the question at the end.
+If you don't know the answer, just say you don't know. DO NOT try to make up an answer.
+If the question is not related to the document, politely respond that you are tuned to only answer questions that are related to the document provided and generate what the document is about.
+
+{context}
+
+Question: {question}
+Helpful answer in markdown:`;
 
 module.exports = (vectorstore) => {
   const model = new OpenAI({
