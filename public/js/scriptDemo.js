@@ -1,3 +1,8 @@
+import showError from './resusables/showError.js';
+import { showProgress, removeProgress } from './resusables/showProgressBtn.js';
+import { showAlert } from './resusables/alert.js';
+import makeRequest from './fetch.js';
+
 //TOGGLER MOBILE VERSION
 const btnDropSection = document.querySelector('.button-dropsection');
 const btnTools = document.querySelector('.button-tools');
@@ -20,6 +25,7 @@ btnTools.addEventListener('click', () => {
 
 const dropZone = document.querySelector('.drop-zone');
 const input = document.querySelector('input[type="file"]');
+const dropDesc = document.getElementById('#drop-description');
 const loadingText = document.querySelector('.loader');
 const fileInfo = document.querySelector('.file-info');
 const fileName = document.querySelector('.chat-title');
@@ -36,7 +42,7 @@ dropZone.addEventListener('dragleave', (e) => {
 dropZone.addEventListener('drop', (e) => {
   e.preventDefault();
   dropZone.classList.remove('drop-zone--active');
-  handleFiles(e.dataTransfer.files);
+  fetchAndDisplay(e);
 });
 
 dropZone.addEventListener('click', () => {
@@ -44,44 +50,81 @@ dropZone.addEventListener('click', () => {
 });
 
 input.addEventListener('change', () => {
-  handleFiles(input.files);
+  if (input.files[0]) fetchAndDisplay(input.files[0], true);
 });
 
-//Call back
-function handleFiles(files) {
-  loadingText.style.display = 'block';
+/////////////////////////////////////////////////
 
-  setTimeout(() => {
-    loadingText.style.display = 'none';
-    const fileSizeInKB = (files[0].size / 1024).toFixed(2);
-    fileInfo.innerHTML = `<div class="file-name"><span>Name: ${files[0].name}</span> <span>Size: ${fileSizeInKB} KB</span></div>  `;
-    fileName.innerHTML = `<h5 class="file-name-header">${files[0].name}</h5>`;
+async function fetchAndDisplay(fileContainer, isFile = false) {
+  const file = isFile ? fileContainer : fileContainer.dataTransfer.items[0].getAsFile();
+  const fileReader = new FileReader();
 
-    const fileReader = new FileReader();
-    fileReader.onload = async function () {
+  const samplePdf = document.querySelector('.btn-sample-pdf');
+  fileReader.onload = async function () {
+    try {
+      // progress indicators
+      showProgress(samplePdf);
+
       const text =
-        files.type === 'application/pdf'
-          ? await extractTextFromPdf(files)
-          : await extractTextFromTxt(files);
-      console.log(text);
-    };
-    fileReader.readAsArrayBuffer(files);
-  }, 1000);
+        file.type === 'application/pdf'
+          ? await extractTextFromPdf(file)
+          : await extractTextFromTxt(file);
+
+      //   console.log(file);
+      //   dataTobeSent.text = text;
+      const dataTobeSent = {
+        text,
+        originalName: file.name,
+      };
+
+      const data = await makeRequest({
+        dataTobeSent,
+        method: 'post',
+        url: `/api/v1/pdf/processpdf`,
+      });
+
+      // Progress Indicators
+      removeProgress(samplePdf, 'Done');
+      showAlert('success', 'Successful on uploading your document!');
+
+      setTimeout(() => {
+        samplePdf.innerHTML = data.chatTitle;
+      }, 1000);
+    } catch (err) {
+      showError(err, samplePdf, 'TryAgain');
+    }
+  };
+  fileReader.readAsArrayBuffer(file);
 }
-//PDF Parser
+
+// /////////////////// //
+//      HELPERS        //
+// ////////////////// //
+
+// --------------- from pdf
 async function extractTextFromPdf(file) {
   const typedArray = new Uint8Array(await file.arrayBuffer());
   const pdfDocument = await pdfjsLib.getDocument({ data: typedArray }).promise;
-  const page = await pdfDocument.getPage(1);
-  const textContent = await page.getTextContent();
-  const text = textContent.items.map((item) => item.str).join('');
-  return text;
+
+  const textContent = [];
+
+  for (let i = 1; i <= pdfDocument.numPages; i++) {
+    const page = await pdfDocument.getPage(i);
+    textContent.push(await page.getTextContent());
+  }
+
+  const text = textContent.map((content) => {
+    return content.items.map((item) => item.str).join('');
+  });
+  return text.join('');
 }
-//TXT Parser
+
+// ------------ form txt
 async function extractTextFromTxt(file) {
   const text = await file.text();
   return text;
 }
+/////////////////l//////////////////////
 
 //FOR DEMO PURPOSE ONLY JS CHAT
 const API_KEY = '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';
@@ -102,7 +145,7 @@ let history = [
       'you are a book analyser. - If you are unsure of an answer, you can say "I don\'t know" or "I\'m not sure. And Dont include your suggetions',
   },
 ];
-console.log(history);
+
 const generate = async () => {
   // Alert the user if no prompt value
   if (!promptInput.value) {
