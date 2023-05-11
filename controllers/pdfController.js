@@ -24,7 +24,6 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const name = `document-${Date.now()}.pdf`;
-    req.orignalName = file.originalname.replace('.pdf', '');
     req.fileName = name;
 
     // console.log(req.fileName);
@@ -45,6 +44,9 @@ exports.checkTokenLimit = function (req, res, next) {
   next();
 };
 
+// ----------------------- Store to Pine Cone
+exports.toPinecone = catchAsync(async function (req, res, next) {});
+
 // ----------------------- PROCESS pdf
 exports.processDocument = catchAsync(async function (req, res, next) {
   const file = req.fileName || req.body.text;
@@ -59,7 +61,7 @@ exports.processDocument = catchAsync(async function (req, res, next) {
   res.status(200).json({
     status: 'success',
     docName: fileNameOnPine,
-    chatName: req.originalName.trim(),
+    chatTitle: req.fileName.trim(),
   });
 });
 
@@ -102,6 +104,7 @@ exports.chat = catchAsync(async function (req, res, next) {
   res.status(200).json({ status: 'success', data: { response } });
 });
 
+// ------------------- delete chat
 exports.deleteChat = catchAsync(async function (req, res, next) {
   const { chatId } = req.params;
   const { user } = req;
@@ -119,3 +122,8 @@ exports.deleteChat = catchAsync(async function (req, res, next) {
 
   res.status(203).json({ message: 'success' });
 });
+
+// // --------------------- Translate
+// exports.translateDocument = catchAsync(async function (req, res, next) {
+//   if (!req.body.language) return next();
+// });
