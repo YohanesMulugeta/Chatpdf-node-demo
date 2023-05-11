@@ -61,3 +61,7 @@ exports.resetPassword = function (req, res, next) {
 
   res.render('resetPassword', { title: 'Reset Passowrd', token });
 };
+
+exports.chatpdf = function (req, res, next) {
+  res.render('chatUi');
+};

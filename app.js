@@ -10,7 +10,7 @@ const compression = require('compression');
 
 const userRouter = require('./routes/userRouter');
 const pdfRouter = require('./routes/processPdfRouter');
-// const viewRouter = require('./routes/viewRouter');
+const viewRouter = require('./routes/viewRouter');
 const planRouter = require('./routes/planRouter');
 const planController = require('./controllers/planController');
 const appErrorHandler = require('./controllers/errorController');
@@ -86,7 +86,7 @@ app.use(xss());
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/pdf', pdfRouter);
 app.use('/api/v1/plans', planRouter);
-// app.use('/', viewRouter);
+app.use('/', viewRouter);
 
 // app.use('/api/v1/plans', planRouter);
 // app.use('/api/v1/features', featureRouter);

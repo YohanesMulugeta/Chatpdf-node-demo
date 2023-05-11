@@ -1,0 +1,18 @@
+doctype html
+html(lang="en")
+    head
+        include _head
+    body
+        include _nav
+        // error display
+        section#scroll-top.breadcrumb
+            .container
+                .col-lg-12.text-center.text-lg-start
+                    h2.fw-bold.display-6.text-red= errMessage? errMessage: 'Oops you ran into some error'
+                    hr
+                    h4.text-red.fw-bold  Terminated with status code #{statusCode} 
+                    p.opacity-75= errMessage
+                    a.btn-primary.btn.my-4.my-lg-3.ms-2.px-4(href="/")
+                        i.bi.bi-pencil-square
+                        | Back to Homepage
+        include _footer
