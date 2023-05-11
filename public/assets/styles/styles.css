@@ -3,10 +3,15 @@ body {
   font-size: 14px;
   font-weight: 400;
   color: #555;
+  /* overflow: hidden; */
 }
 p {
   line-height: 22px;
   letter-spacing: normal;
+}
+
+ul {
+  padding: 0;
 }
 
 @keyframes popup {
@@ -62,6 +67,7 @@ p {
 .chat-main-container {
   display: grid;
   grid-template-columns: 0.2fr 0.8fr;
+  width: 100vw;
   height: 100vh;
 }
 /*Left*/
@@ -70,6 +76,7 @@ p {
   flex-direction: column;
   justify-content: space-between;
   background-color: rgb(0, 21, 41);
+  width: 20vw;
 }
 .chat-column-left > * {
   color: #fff;
@@ -83,7 +90,7 @@ p {
 
 .chat-column-left-row-two {
   display: flex;
-  justify-content: space-between;
+  justify-content: cente;
   align-items: center;
   padding-left: 10px;
   padding-right: 10px;
@@ -149,14 +156,19 @@ p {
 /*
 */
 .input-group {
-  width: 60vw;
+  /* width: 80%; */
+  width: clamp(340px, 85%, 700px);
   border-radius: 7px;
   overflow: hidden;
   border: 1px solid #66afe9;
 }
 
-.input-group-btn {
+/* .input-group-btn {
   background-color: rgb(64, 129, 248);
+  width: 60px;
+} */
+.btn-ask {
+  width: 20%;
 }
 .bi-send {
   color: #fff;
@@ -175,13 +187,13 @@ p {
 .input-group.default-input-group .form-control {
   border-right: 0;
 }
-.input-group.default-input-group .form-control + .input-group-btn .btn {
+/* .input-group.default-input-group .form-control + .input-group-btn .btn {
   border-left: 0;
 }
 
 .input-group.default-input-group .form-control:focus + .input-group-btn .btn {
   outline: 0;
-}
+} */
 
 /*
 Drag and drop
@@ -216,10 +228,16 @@ Chat nav
 .chat-nav-list {
   list-style: none;
   display: flex;
-  gap: 7px;
-  justify-content: space-around;
-  margin: 10px;
+  gap: 10px;
+  /* justify-content: flex-start; */
+  /* justify-content: space-between; */
+  /* margin: 10px; */
 }
+
+.twitter-icon {
+  justify-self: flex-end;
+}
+
 .chat-nav-list-item > a {
   color: white;
   text-decoration: none;
@@ -241,6 +259,9 @@ MOBILE VERSION
   display: none;
 }
 @media screen and (max-width: 900px) {
+  .chat-column-left-row-two {
+    justify-content: space-between;
+  }
   .mobile-hidden {
     display: none !important;
   }
@@ -280,10 +301,11 @@ MOBILE VERSION
   }
   .chat-column-right-row-three {
     width: 100vw;
+    /* text-align: center; */
   }
-  .input-group {
+  /* .input-group {
     width: 85vw;
-  }
+  } */
   .chat-tools-item {
     display: flex;
     flex-direction: row;
