@@ -3,6 +3,7 @@ import { showProgress, removeProgress } from './resusables/showProgressBtn.js';
 import { showAlert } from './resusables/alert.js';
 import makeRequest from './resusables/fetch.js';
 import Chat from './chat/chat.js';
+import { setCurrentChat } from './scriptDemo.js';
 
 export function setChatTitle(title) {
   document.querySelector('.chat-title').textContent = title;
@@ -38,7 +39,7 @@ export default async function fetchAndDisplay(fileContainer, isFile = false) {
 
       //   const chat = new Chat(10000000, 'Yohanes Mulugeta', history);
       const chat = new Chat(data.chatId, data.chatTitle);
-
+      setCurrentChat(chat);
       // Progress Indicators
       removeProgress(samplePdf, 'Done');
       showAlert('success', 'Successful on uploading your document!');
@@ -52,7 +53,7 @@ export default async function fetchAndDisplay(fileContainer, isFile = false) {
       showError(err, samplePdf, 'TryAgain');
     }
   };
-  fileReader.readAsArrayBuffer(file);
+  const lala = fileReader.readAsArrayBuffer(file);
 }
 
 // /////////////////// //
