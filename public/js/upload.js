@@ -37,9 +37,12 @@ export default async function fetchAndDisplay(fileContainer, isFile = false) {
         url: `/api/v1/pdf/processpdf`,
       });
 
-      //   const chat = new Chat(10000000, 'Yohanes Mulugeta', history);
-      const chat = new Chat(data.chatId, data.chatTitle);
+      // const data = { chatId: 'pupu', chatTitle: 'pupu' };
+
+      //   Creating new chat instance and removing the already existed one
+      const chat = new Chat(data.chatId, data.chatTitle, data.docName);
       setCurrentChat(chat);
+
       // Progress Indicators
       removeProgress(samplePdf, 'Done');
       showAlert('success', 'Successful on uploading your document!');

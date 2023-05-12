@@ -3,29 +3,40 @@ import showError from '../resusables/showError.js';
 import { showProgress, removeProgress } from '../resusables/showProgressBtn.js';
 
 class Chat {
-  chatContainer = document.querySelector('.messages-chat');
   promptInput = document.getElementById('user-input');
   generateBtn = document.querySelector('.btn-ask');
+  containerContainer = document.querySelector('.chat-column-right-row-two');
+  state = { chatId: '', docName: '', chatTitle: '', history: [] };
 
-  constructor(chatId, chatTitle, history = []) {
-    this.chatId = chatId;
-    this.chatTitle = chatTitle;
-    this.history = history;
-    this.url = `api/v1/pdf/chat/${this.chatId}`;
-
-    if (history.length === 0)
-      this.addBotMessage(
-        `Hello, I am here to help assist you with any question related to the document you just uploaded: ${this.chatTitle}`
-      );
+  constructor(chatId, chatTitle, docName) {
+    this.state.chatId = chatId;
+    this.state.chatTitle = chatTitle;
+    this.state.docName = docName;
+    this.url = `api/v1/pdf/chat/${this.state.chatId}`;
 
     this.init();
   }
 
   init() {
+    this.setState();
+
+    document.querySelector('.messages-chat').remove();
+    this.containerContainer.insertAdjacentHTML(
+      'afterbegin',
+      '<div class="messages-chat"></div>'
+    );
+    this.chatContainer = document.querySelector('.messages-chat');
     this.generateBtn.addEventListener('click', this.handleGenerateBtn);
     this.promptInput.addEventListener('keyup', this.handleEnterKey);
-    if (this.history.length > 0) {
-      this.history.forEach((hist) => {
+  }
+
+  populateHistory() {
+    if (this.state.history.length === 0) {
+      this.addBotMessage(
+        `Hello, I am here to help assist you with any question related to the document you just uploaded: ${this.chatTitle}`
+      );
+    } else {
+      this.state.history.forEach((hist) => {
         this.addUserMessage(hist[0].trim().replace(/question:/i, ''));
         this.addBotMessage(hist[1].trim().replace(/answer:/i, ''));
       });
@@ -51,9 +62,17 @@ class Chat {
       this.addUserMessage(question);
       this.addBotMessage('Loading...');
 
-      const dataTobeSent = { question: question };
+      const dataTobeSent = {
+        question: question,
+        history: this.state.history,
+        docName: this.state.docName,
+      };
 
       const { data } = await makeRequest({ dataTobeSent, url: this.url, method: 'post' });
+
+      this.state.history.push([`Question: ${question}`, `Answer: ${data.response.text}`]);
+
+      this.storeStateToLocal();
       this.replaceTypingEffect(data.response.text);
     } catch (err) {
       showError(err, this.generateBtn, 'Try Again!');
@@ -91,6 +110,34 @@ class Chat {
   collectGarbage() {
     this.generateBtn.removeEventListener('click', this.handleGenerateBtn);
     this.promptInput.removeEventListener('keyup', this.handleEnterKey);
+  }
+
+  storeStateToLocal(isnew = false) {
+    const chats = JSON.parse(localStorage.getItem('chatsChatpdf'));
+    if (isnew) {
+      chats[this.state.chatId] = this.state;
+      return localStorage.setItem('chatsChatpdf', JSON.stringify(chats));
+    }
+
+    chats[this.state.chatId] = this.state;
+    localStorage.setItem('chatsChatpdf', JSON.stringify(chats));
+  }
+
+  setState() {
+    const storage = localStorage.getItem('chatsChatpdf');
+
+    if (!storage)
+      return localStorage.setItem(
+        'chatsChatpdf',
+        JSON.stringify({ [this.state.chatId]: this.state })
+      );
+
+    const parsed = JSON.parse(storage);
+    const nextState = parsed[this.state.chatId];
+
+    if (!nextState) return this.storeStateToLocal(true);
+
+    this.state = nextState;
   }
 }
 

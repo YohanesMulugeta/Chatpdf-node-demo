@@ -56,5 +56,4 @@ dropZone.addEventListener('click', () => {
 
 input.addEventListener('change', async () => {
   if (input.files[0]) fetchAndDisplay(input.files[0], true);
-  console.log(currentChat);
 });

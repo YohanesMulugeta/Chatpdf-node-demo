@@ -71,12 +71,12 @@ exports.processDocument = catchAsync(async function (req, res, next) {
 // --------------------------- Chat
 exports.chat = catchAsync(async function (req, res, next) {
   const { chatId } = req.params;
-  const { question } = req.body;
+  const { question, history, docName: nameSpace } = req.body;
 
   if (!question || question.trim() === '')
     return next(new AppError('You have to provide question!', 400));
 
-  const nameSpace = await req.user.chats.id(chatId).vectorName;
+  // const nameSpace = await req.user.chats.id(chatId).vectorName;
   // OPEN-AI recommendation to replace new lines with space
   const sanitizedQuestion = question.replace('/n', ' ').trim();
   const pineconeIndex = pineconeClient.Index(process.env.PINECONE_INDEX_NAME);
@@ -88,8 +88,8 @@ exports.chat = catchAsync(async function (req, res, next) {
   });
 
   // Get chat history
-  const user = await User.findById(req.user._id).select('+chats.chatHistory');
-  const chatHistory = user.chats.id(chatId).chatHistory.slice(-5);
+  // const user = await User.findById(req.user._id).select('+chats.chatHistory');
+  const chatHistory = history.slice(-5);
 
   const chain = makeChain(vectorStore);
   //Ask a question using chat history
@@ -99,10 +99,10 @@ exports.chat = catchAsync(async function (req, res, next) {
   });
 
   // Update User
-  user.chats
-    .id(chatId)
-    .chatHistory.push([`Question: ${question}`, `Answer: ${response.text}`]);
-  user.updateChatModifiedDate(chatId);
+  // user.chats
+  //   .id(chatId)
+  //   .chatHistory.push([`Question: ${question}`, `Answer: ${response.text}`]);
+  // user.updateChatModifiedDate(chatId);
 
   res.status(200).json({ status: 'success', data: { response } });
 });
