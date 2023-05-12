@@ -1,7 +1,8 @@
 import showError from './resusables/showError.js';
 import { showProgress, removeProgress } from './resusables/showProgressBtn.js';
 import { showAlert } from './resusables/alert.js';
-import makeRequest from './fetch.js';
+import makeRequest from './resusables/fetch.js';
+import Chat from './chat/chat.js';
 
 //TOGGLER MOBILE VERSION
 const btnDropSection = document.querySelector('.button-dropsection');
@@ -83,6 +84,8 @@ async function fetchAndDisplay(fileContainer, isFile = false) {
         url: `/api/v1/pdf/processpdf`,
       });
 
+      const chat = new Chat(data.chatId, data.chatTitle);
+
       // Progress Indicators
       removeProgress(samplePdf, 'Done');
       showAlert('success', 'Successful on uploading your document!');
@@ -131,7 +134,7 @@ const API_KEY = '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';
 const API_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
 // Get references to the UI elements
 const promptInput = document.getElementById('user-input');
-const generateBtn = document.getElementById('submit-button');
+const generateBtn = document.querySelector('.btn-ask');
 
 const resultText = document.querySelector('.text-bot');
 const userText = document.querySelector('.text-user');
@@ -198,13 +201,13 @@ const generate = async () => {
 };
 
 //generate using click enter
-promptInput.addEventListener('keyup', (event) => {
-  if (event.key === 'Enter') {
-    generate();
-  }
-});
-//generate using button
-generateBtn.addEventListener('click', generate);
+// promptInput.addEventListener('keyup', (event) => {
+//   if (event.key === 'Enter') {
+//     generate();
+//   }
+// });
+// //generate using button
+// generateBtn.addEventListener('click', generate);
 
 //create new html instance for USER message
 function addUserMessage(message) {
