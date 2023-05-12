@@ -37,6 +37,18 @@ ul {
   justify-content: center;
 }
 
+.active-chat-btn {
+  disabled: true;
+  background-color: #e03131;
+}
+
+.btn-sample-pdf {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+}
+
 .chat .messages-chat .text-bot {
   display: inline-block;
 

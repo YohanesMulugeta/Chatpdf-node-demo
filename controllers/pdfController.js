@@ -109,19 +109,11 @@ exports.chat = catchAsync(async function (req, res, next) {
 
 // ------------------- delete chat
 exports.deleteChat = catchAsync(async function (req, res, next) {
-  const { chatId } = req.params;
-  const user = await User.findById(req.user._id).select('+chats.chatHistory');
+  const { vectorName } = req.params;
 
-  const vectorName = user.chats.id(chatId)?.vectorName;
   const pineconeIndex = pineconeClient.Index(process.env.PINECONE_INDEX_NAME);
 
-  const index = user.chats.findIndex((chat) => {
-    return chat.id === chatId;
-  });
-
   pineconeIndex.delete1({ deleteAll: true, namespace: vectorName });
-  if (index !== -1) user.chats.splice(index, 1);
-  await user.save({ validateBeforeSave: false });
 
   res.status(203).json({ message: 'success' });
 });

@@ -1,4 +1,4 @@
-import renderChats from './chat/renderChats.js';
+import renderChatBtns, { handleChatBtns } from './chat/renderChats.js';
 import fetchAndDisplay from './upload.js';
 
 //TOGGLER MOBILE VERSION
@@ -8,6 +8,7 @@ const btnTools = document.querySelector('.button-tools');
 const chatColumnLeft = document.querySelector('.chat-column-left');
 const chatTools = document.querySelector('.chat-tools');
 const returnToChat = document.querySelector('.close-btn');
+const sideBar = document.querySelector('.chat-column-left-row-one');
 
 //DRAG AND DROP || UPLOAD FILE
 const dropZone = document.querySelector('.drop-zone');
@@ -29,11 +30,6 @@ btnTools.addEventListener('click', () => {
 });
 
 let currentChat;
-
-export const setCurrentChat = (chat) => {
-  currentChat?.collectGarbage();
-  currentChat = chat;
-};
 
 dropZone.addEventListener('dragover', (e) => {
   e.preventDefault();
@@ -59,4 +55,11 @@ input.addEventListener('change', async () => {
   if (input.files[0]) fetchAndDisplay(input.files[0], true);
 });
 
-window.addEventListener('load', renderChats);
+window.addEventListener('load', renderChatBtns);
+
+sideBar.addEventListener('click', handleChatBtns);
+
+export const setCurrentChat = (chat) => {
+  currentChat?.collectGarbage();
+  currentChat = chat;
+};

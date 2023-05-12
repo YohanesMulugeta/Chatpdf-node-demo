@@ -8,21 +8,13 @@ const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const compression = require('compression');
 
-const userRouter = require('./routes/userRouter');
 const pdfRouter = require('./routes/processPdfRouter');
 const viewRouter = require('./routes/viewRouter');
-const planRouter = require('./routes/planRouter');
-const planController = require('./controllers/planController');
+
 const appErrorHandler = require('./controllers/errorController');
 const AppError = require('./util/AppError');
 
 const app = express();
-
-app.use(
-  '/webhook-checkout',
-  express.raw({ type: 'application/json' }),
-  planController.handleWebhook
-);
 
 app.use(express.json({ limit: '100kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
@@ -83,15 +75,8 @@ app.use(mongoSanitize({ replaceWith: '_' }));
 
 app.use(xss());
 
-app.use('/api/v1/users', userRouter);
 app.use('/api/v1/pdf', pdfRouter);
-app.use('/api/v1/plans', planRouter);
 app.use('/', viewRouter);
-
-// app.use('/api/v1/plans', planRouter);
-// app.use('/api/v1/features', featureRouter);
-// app.use('/admin', adminRouter);
-// app.use('/', viewRouter);
 
 app.use('*', (req, res, next) => {
   return next(

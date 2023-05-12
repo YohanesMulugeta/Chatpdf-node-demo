@@ -6,11 +6,13 @@ class Chat {
   promptInput = document.getElementById('user-input');
   generateBtn = document.querySelector('.btn-ask');
   containerContainer = document.querySelector('.chat-column-right-row-two');
+  chatTitle = document.querySelector('.chat-title');
   state = { docName: '', chatTitle: '', history: [] };
 
   constructor(chatTitle, docName) {
     this.state.chatTitle = chatTitle;
     this.state.docName = docName;
+    this.chatTitle.textContent = chatTitle;
     this.url = `api/v1/pdf/chat/`;
 
     this.init();
@@ -27,6 +29,8 @@ class Chat {
     this.chatContainer = document.querySelector('.messages-chat');
     this.generateBtn.addEventListener('click', this.handleGenerateBtn);
     this.promptInput.addEventListener('keyup', this.handleEnterKey);
+
+    this.populateHistory();
   }
 
   populateHistory() {
