@@ -6,13 +6,12 @@ class Chat {
   promptInput = document.getElementById('user-input');
   generateBtn = document.querySelector('.btn-ask');
   containerContainer = document.querySelector('.chat-column-right-row-two');
-  state = { chatId: '', docName: '', chatTitle: '', history: [] };
+  state = { docName: '', chatTitle: '', history: [] };
 
-  constructor(chatId, chatTitle, docName) {
-    this.state.chatId = chatId;
+  constructor(chatTitle, docName) {
     this.state.chatTitle = chatTitle;
     this.state.docName = docName;
-    this.url = `api/v1/pdf/chat/${this.state.chatId}`;
+    this.url = `api/v1/pdf/chat/`;
 
     this.init();
   }
@@ -71,12 +70,12 @@ class Chat {
       const { data } = await makeRequest({ dataTobeSent, url: this.url, method: 'post' });
 
       this.state.history.push([`Question: ${question}`, `Answer: ${data.response.text}`]);
-
       this.storeStateToLocal();
+
       this.replaceTypingEffect(data.response.text);
     } catch (err) {
       showError(err, this.generateBtn, 'Try Again!');
-      location.reload(true);
+      // location.reload(true);
     }
   }
 
@@ -114,12 +113,13 @@ class Chat {
 
   storeStateToLocal(isnew = false) {
     const chats = JSON.parse(localStorage.getItem('chatsChatpdf'));
+    this.state.lastUpdatedDate = Date.now();
     if (isnew) {
-      chats[this.state.chatId] = this.state;
+      chats[this.state.docName] = this.state;
       return localStorage.setItem('chatsChatpdf', JSON.stringify(chats));
     }
 
-    chats[this.state.chatId] = this.state;
+    chats[this.state.docName] = this.state;
     localStorage.setItem('chatsChatpdf', JSON.stringify(chats));
   }
 
@@ -129,11 +129,11 @@ class Chat {
     if (!storage)
       return localStorage.setItem(
         'chatsChatpdf',
-        JSON.stringify({ [this.state.chatId]: this.state })
+        JSON.stringify({ [this.state.docName]: this.state })
       );
 
     const parsed = JSON.parse(storage);
-    const nextState = parsed[this.state.chatId];
+    const nextState = parsed[this.state.docName];
 
     if (!nextState) return this.storeStateToLocal(true);
 

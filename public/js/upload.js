@@ -40,7 +40,7 @@ export default async function fetchAndDisplay(fileContainer, isFile = false) {
       // const data = { chatId: 'pupu', chatTitle: 'pupu' };
 
       //   Creating new chat instance and removing the already existed one
-      const chat = new Chat(data.chatId, data.chatTitle, data.docName);
+      const chat = new Chat(data.chatTitle, data.docName);
       setCurrentChat(chat);
 
       // Progress Indicators

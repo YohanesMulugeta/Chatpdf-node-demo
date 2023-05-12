@@ -1,3 +1,4 @@
+import renderChats from './chat/renderChats.js';
 import fetchAndDisplay from './upload.js';
 
 //TOGGLER MOBILE VERSION
@@ -7,6 +8,14 @@ const btnTools = document.querySelector('.button-tools');
 const chatColumnLeft = document.querySelector('.chat-column-left');
 const chatTools = document.querySelector('.chat-tools');
 const returnToChat = document.querySelector('.close-btn');
+
+//DRAG AND DROP || UPLOAD FILE
+const dropZone = document.querySelector('.drop-zone');
+const input = document.querySelector('input[type="file"]');
+const dropDesc = document.getElementById('#drop-description');
+const loadingText = document.querySelector('.loader');
+const fileInfo = document.querySelector('.file-info');
+const fileName = document.querySelector('.chat-title');
 
 btnDropSection.addEventListener('click', () => {
   chatColumnLeft.classList.remove('mobile-hidden');
@@ -18,14 +27,6 @@ returnToChat.addEventListener('click', () => {
 btnTools.addEventListener('click', () => {
   chatTools.classList.toggle('mobile-hidden');
 });
-//DRAG AND DROP || UPLOAD FILE
-
-const dropZone = document.querySelector('.drop-zone');
-const input = document.querySelector('input[type="file"]');
-const dropDesc = document.getElementById('#drop-description');
-const loadingText = document.querySelector('.loader');
-const fileInfo = document.querySelector('.file-info');
-const fileName = document.querySelector('.chat-title');
 
 let currentChat;
 
@@ -57,3 +58,5 @@ dropZone.addEventListener('click', () => {
 input.addEventListener('change', async () => {
   if (input.files[0]) fetchAndDisplay(input.files[0], true);
 });
+
+window.addEventListener('load', renderChats);

@@ -56,21 +56,21 @@ exports.processDocument = catchAsync(async function (req, res, next) {
   const fileNameOnPine = await loadPdf(file, req.fileName);
 
   // store the new chat
-  const user = await User.findById(req.user._id).select('+chats.chatHistory');
-  user.chats.push({ name: originalName, vectorName: fileNameOnPine });
-  const updatedUser = await user.save({ validateBeforeSave: false });
+  // const user = await User.findById(req.user._id).select('+chats.chatHistory');
+  // user.chats.push({ name: originalName, vectorName: fileNameOnPine });
+  // const updatedUser = await user.save({ validateBeforeSave: false });
 
   res.status(200).json({
     status: 'success',
     docName: fileNameOnPine,
     chatTitle: originalName,
-    chatId: updatedUser.chats.slice(-1)[0]._id,
+    // chatId: updatedUser.chats.slice(-1)[0]._id,
   });
 });
 
 // --------------------------- Chat
 exports.chat = catchAsync(async function (req, res, next) {
-  const { chatId } = req.params;
+  // const { chatId } = req.params;
   const { question, history, docName: nameSpace } = req.body;
 
   if (!question || question.trim() === '')
@@ -111,6 +111,7 @@ exports.chat = catchAsync(async function (req, res, next) {
 exports.deleteChat = catchAsync(async function (req, res, next) {
   const { chatId } = req.params;
   const user = await User.findById(req.user._id).select('+chats.chatHistory');
+
   const vectorName = user.chats.id(chatId)?.vectorName;
   const pineconeIndex = pineconeClient.Index(process.env.PINECONE_INDEX_NAME);
 
