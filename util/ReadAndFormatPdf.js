@@ -65,17 +65,24 @@ async function spiltText(text, check = true) {
   return output;
 }
 
-async function storeToPinecone(doc) {
+async function storeToPinecone(docs) {
   const pineconeIndex = client.Index(process.env.PINECONE_INDEX_NAME);
 
   const fileNameOnPine = `pine-${Date.now()}`;
 
-  await PineconeStore.fromDocuments(doc, new OpenAIEmbeddings(), {
-    pineconeIndex,
-    namespace: fileNameOnPine,
-  });
+  const maxVector = 100;
 
-  console.log(fileNameOnPine);
+  for (let i = 0; i < docs.length; i += maxVector) {
+    const doc = docs.slice(i, i + maxVector + 1);
+    await PineconeStore.fromDocuments(doc, new OpenAIEmbeddings(), {
+      pineconeIndex,
+      namespace: fileNameOnPine,
+    });
+
+    console.log('success');
+  }
+
+  // console.log(fileNameOnPine);
   return fileNameOnPine;
 }
 
