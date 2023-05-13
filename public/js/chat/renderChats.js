@@ -9,7 +9,7 @@ const loaderChatBtn = document.querySelector('.loader-chatbtns ');
 export default function renderChatBtns(e) {
   const chats = localStorage.getItem('chatsChatpdf');
 
-  if (!chats) return;
+  if (!chats) return loaderChatBtn?.remove();
 
   const parent = getSidebar().closest('.chat-column-left-row-one');
 
