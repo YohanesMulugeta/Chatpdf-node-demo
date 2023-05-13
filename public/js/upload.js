@@ -5,20 +5,22 @@ import makeRequest from './resusables/fetch.js';
 import Chat from './chat/chat.js';
 import { setCurrentChat } from './scriptDemo.js';
 
+const loader = document.querySelector('.loader-upload')?.querySelector('.loader');
+const input = document.querySelector('input[type="file"]');
+
 export function setChatTitle(title) {
   document.querySelector('.chat-title').textContent = title;
 }
 
 export default async function fetchAndDisplay(fileContainer, isFile = false) {
+  input.setAttribute('disabled', true);
   const file = isFile ? fileContainer : fileContainer.dataTransfer.items[0].getAsFile();
   const fileReader = new FileReader();
 
-  const samplePdf = document.querySelector('.btn-sample-pdf');
   fileReader.onload = async function () {
     try {
       // progress indicators
-      showProgress(samplePdf);
-
+      loader.style.display = 'block';
       const text =
         file.type === 'application/pdf'
           ? await extractTextFromPdf(file)
@@ -44,19 +46,24 @@ export default async function fetchAndDisplay(fileContainer, isFile = false) {
       setCurrentChat(chat);
 
       // Progress Indicators
-      removeProgress(samplePdf, 'Done');
       showAlert('success', 'Successful on uploading your document!');
 
+      loader.style.display = 'none';
+      input.removeAttribute('disabled');
       setTimeout(() => {
         // samplePdf.innerHTML = 'Yohanes Mulugeta';
-        samplePdf.innerHTML = data.chatTitle;
         setChatTitle(data.chatTitle);
       }, 1000);
     } catch (err) {
-      showError(err, samplePdf, 'TryAgain');
+      input.removeAttribute('disabled');
+      const message =
+        err.response?.data?.message || 'Something Went Wrong. Please try again';
+      showAlert('danger', message);
+
+      loader.style.display = 'none';
     }
   };
-  const lala = fileReader.readAsArrayBuffer(file);
+  fileReader.readAsArrayBuffer(file);
 }
 
 // /////////////////// //

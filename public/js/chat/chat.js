@@ -24,7 +24,12 @@ class Chat {
     document.querySelector('.messages-chat').remove();
     this.containerContainer.insertAdjacentHTML(
       'afterbegin',
-      '<div class="messages-chat"></div>'
+      `<div class="messages-chat">
+        <div class='d-flex justify-content-center loader-messages'>
+          <div class='spinner-grow text-primary loader'>
+          </div>
+        </div>
+      </div>`
     );
     this.chatContainer = document.querySelector('.messages-chat');
     this.generateBtn.addEventListener('click', this.handleGenerateBtn);
@@ -34,9 +39,10 @@ class Chat {
   }
 
   populateHistory() {
+    const loader = document.querySelector('.loader-messages');
     if (this.state.history.length === 0) {
       this.addBotMessage(
-        `Hello, I am here to help assist you with any question related to the document you just uploaded: ${this.chatTitle}`
+        `Hello, I am here to help assist you with any question related to the document you uploaded`
       );
     } else {
       this.state.history.forEach((hist) => {
@@ -44,6 +50,7 @@ class Chat {
         this.addBotMessage(hist[1].trim().replace(/answer:/i, ''));
       });
     }
+    loader.remove();
   }
 
   handleGenerateBtn = (e) => {

@@ -35,15 +35,17 @@ html(lang="en")
                                 | Drag and drop a file here
                                 | or click to upload
                             input#file(type="file", hidden, accept=".pdf,.txt")
-                            .d-flex.justify-content-center
+                            .d-flex.justify-content-center.loader-upload
                                 .spinner-grow.text-primary.loader(role="status")
                         .file-info
+                        .d-flex.justify-content-center.loader-chatbtns
+                            .spinner-grow.text-primary.loader(role="status")
                     // pdf chat History button
                     //- button.btn-sample-pdf.btn.btn-primary
-                    //-     i.bi.bi-file-earmark-pdf
-                    //-     | Sample pdf
+                        //- i.bi.bi-file-earmark-pdf
+                        //- | Sample pdf
                 // Navigation Bar
-                .chat-column-left-row-two
+                .chat-column-left-row-two.mt-3
                     ul.chat-nav-list
                         li.chat-nav-list-item
                             a(href="#") Home

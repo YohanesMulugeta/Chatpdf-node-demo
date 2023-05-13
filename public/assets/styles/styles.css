@@ -26,6 +26,7 @@ ul {
 .fixed {
   position: fixed;
 }
+
 .alert-custom.fixed {
   top: 10px;
   width: 80%;
@@ -37,16 +38,25 @@ ul {
   justify-content: center;
 }
 
-.active-chat-btn {
-  disabled: true;
+.btn-chat:disabled {
   background-color: #e03131;
+}
+.active-chat-btn {
+  cursor: none;
+  pointer-events: none;
 }
 
 .btn-sample-pdf {
+  width: 80%;
+  height: 36px;
+  overflow: hidden;
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
+  /* justify-content: flex-start; */
   gap: 10px;
+}
+
+.btn-chat {
+  background: transparent;
 }
 
 .chat .messages-chat .text-bot {
@@ -114,7 +124,15 @@ ul {
   justify-content: space-between;
   background-color: rgb(0, 21, 41);
   width: 20vw;
+  height: 100vh;
+  overflow: auto;
 }
+
+.chat-btn-delete-container {
+  display: flex;
+  gap: 8px;
+}
+
 .chat-column-left > * {
   color: #fff;
 }
@@ -255,8 +273,42 @@ Drag and drop
   flex-direction: column;
 }
 
-.loader {
+.loader-upload > .loader {
   display: none;
+  /* display: block; */
+  /* width: 5rem; */
+  /* height: 5rem; */
+}
+
+.loader-chatbtns {
+  margin-top: 50px;
+}
+
+.loader-chatbtns > .loader {
+  width: 3rem;
+  height: 3rem;
+}
+
+.loader-messages {
+  background-color: #fff;
+  z-index: 999;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-messages > .loader {
+  width: 3rem;
+  height: 3rem;
+}
+
+.messages-chat {
+  position: relative;
 }
 
 /*

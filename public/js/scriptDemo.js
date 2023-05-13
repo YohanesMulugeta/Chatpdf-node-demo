@@ -14,9 +14,8 @@ const sideBar = document.querySelector('.chat-column-left-row-one');
 const dropZone = document.querySelector('.drop-zone');
 const input = document.querySelector('input[type="file"]');
 const dropDesc = document.getElementById('#drop-description');
-const loadingText = document.querySelector('.loader');
+
 const fileInfo = document.querySelector('.file-info');
-const fileName = document.querySelector('.chat-title');
 
 btnDropSection.addEventListener('click', () => {
   chatColumnLeft.classList.remove('mobile-hidden');
