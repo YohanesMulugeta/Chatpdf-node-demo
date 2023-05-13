@@ -73,6 +73,12 @@ ul {
   gap: 10px;
 }
 
+.loader-chat-bot > .loader {
+  width: 1rem;
+  height: 1rem;
+  display: block;
+}
+
 .chat .messages-chat .text-bot {
   display: inline-block;
 

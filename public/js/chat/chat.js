@@ -72,7 +72,7 @@ class Chat {
   async sendQuestion(question) {
     try {
       this.addUserMessage(question);
-      this.addBotMessage('Loading...');
+      this.addBotMessage('Loading...', true);
 
       const dataTobeSent = {
         question: question,
@@ -81,11 +81,12 @@ class Chat {
       };
 
       const { data } = await makeRequest({ dataTobeSent, url: this.url, method: 'post' });
-
+      // console.log(data);
+      // source files at data.sourceDocuments[].pageContent
       this.state.history.push([`Question: ${question}`, `Answer: ${data.response.text}`]);
       this.storeStateToLocal();
 
-      this.replaceTypingEffect(data.response.text);
+      this.replaceTypingEffect(data.response.text, data.response.sourceDocuments);
     } catch (err) {
       showError(err, this.generateBtn, 'Try Again!');
       // location.reload(true);
@@ -101,8 +102,12 @@ class Chat {
   }
 
   //create new html instance for BOT message
-  addBotMessage(resultText) {
-    const formatedText = window.markdownit().render(resultText);
+  addBotMessage(resultText, load = false) {
+    const formatedText = load
+      ? `<div class='d-flex justify-content-start loader-chat-bot'>
+              <div class='spinner-grow text-primary loader' role='status'></div>
+          </div>`
+      : window.markdownit().render(resultText);
 
     document.querySelector('.last-bot-message')?.classList.remove('last-bot-message');
     const botDiv = document.createElement('div');
@@ -114,10 +119,31 @@ class Chat {
     botDiv.scrollIntoView();
   }
 
-  replaceTypingEffect(botText) {
+  replaceTypingEffect(botText, sourceDocuments) {
     const lastBotMessage = document.querySelector('.last-bot-message');
     const formatedText = window.markdownit().render(botText);
-    lastBotMessage.textContent = formatedText;
+    lastBotMessage.innerHTML = formatedText;
+    console.log(sourceDocuments);
+    if (sourceDocuments)
+      sourceDocuments.forEach((source, i) => {
+        const formatedPageContent = window.markdownit().render(source.pageContent);
+        lastBotMessage.insertAdjacentHTML(
+          'beforeend',
+          `<div id='accordionExample-${i}' class='accordion'>
+            <div class='accordion-item'>
+              <h2 id='heading-${i}' class='accordion-header'>
+                <button class='button accordion-button' type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${i}" aria-expanded="false" aria-controls="collapse-${i}">
+                  Source ${i + 1}
+                </button>
+              </h2>
+              <div id='collapse-${i}' class='accordion-collapse collapse' aria-labelledby="heading-${i}" data-bs-parent="#accordionExample-${i}">
+                <div class='accordion-body'>${formatedPageContent}</div>
+              </div>
+            </div>
+          </div>`
+        );
+      });
+
     this.chatContainer.scrollTop = this.chatContainer.scrollHeight;
     lastBotMessage.scrollIntoView();
   }
