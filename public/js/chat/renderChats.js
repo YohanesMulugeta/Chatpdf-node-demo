@@ -40,7 +40,6 @@ async function handleDeleteChat(e) {
     let time = 3;
     targetBtn.classList.remove('btn-delete-chat');
     const handleInterval = () => {
-      console.log('lala');
       targetBtn.innerHTML = `<i class="bi bi-arrow-90deg-left">${time}</i>`;
       time--;
     };
@@ -102,6 +101,23 @@ function handleUndo(e) {
 async function deleteChat(btn, docname, intervalId) {
   clearInterval(intervalId);
   showProgress(btn);
+
+  // DELETE FROM VECTOR DATABASE
   await makeRequest({ method: 'delete', url: `/api/v1/pdf/${docname}` });
-  removeProgress(btn, `<i class='bi bi-archive'></i>`);
+
+  // DELETE FROM LOCAL STORAGE
+  const parsedStorage = JSON.parse(localStorage.getItem('chatsChatpdf'));
+  parsedStorage[docname] = undefined;
+
+  // STORE UPDATED STORAGE
+  localStorage.setItem('chatsChatpdf', JSON.stringify(parsedStorage));
+
+  const container = btn.closest('.chat-btn-delete-container');
+
+  container.classList.add('success-deletion');
+  container.innerHTML = `<i class="bi bi-check-circle-fill"></i>`;
+
+  setTimeout(() => {
+    container.remove();
+  }, 1500);
 }

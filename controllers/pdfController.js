@@ -92,6 +92,7 @@ exports.chat = catchAsync(async function (req, res, next) {
   const chatHistory = history.slice(-5);
 
   const chain = makeChain(vectorStore);
+
   //Ask a question using chat history
   const response = await chain.call({
     question: sanitizedQuestion,
