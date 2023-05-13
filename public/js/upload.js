@@ -56,8 +56,7 @@ export default async function fetchAndDisplay(fileContainer, isFile = false) {
       }, 1000);
     } catch (err) {
       input.removeAttribute('disabled');
-      const message =
-        err.response?.data?.message || 'Something Went Wrong. Please try again';
+      const message = err.response?.data?.message || err.message;
       showAlert('danger', message);
 
       loader.style.display = 'none';
@@ -76,6 +75,8 @@ async function extractTextFromPdf(file) {
   const pdfDocument = await pdfjsLib.getDocument({ data: typedArray }).promise;
 
   const textContent = [];
+
+  if (pdfDocument.numPages > 50) throw new Error('Please dont use large pdfs. Thank you');
 
   for (let i = 1; i <= pdfDocument.numPages; i++) {
     const page = await pdfDocument.getPage(i);
