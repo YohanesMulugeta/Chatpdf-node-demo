@@ -1,9 +1,10 @@
+import Chat from './chat/chat.js';
 import renderChatBtns, { handleChatBtns } from './chat/renderChats.js';
 import fetchAndDisplay from './upload.js';
 
 //TOGGLER MOBILE VERSION
 const btnDropSection = document.querySelector('.button-dropsection');
-const btnTools = document.querySelector('.button-tools');
+// const btnTools = document.querySelector('.button-tools');
 
 const chatColumnLeft = document.querySelector('.chat-column-left');
 const chatTools = document.querySelector('.chat-tools');
@@ -24,9 +25,9 @@ returnToChat.addEventListener('click', () => {
   chatColumnLeft.classList.add('mobile-hidden');
 });
 
-btnTools.addEventListener('click', () => {
-  chatTools.classList.toggle('mobile-hidden');
-});
+// btnTools.addEventListener('click', () => {
+//   chatTools.classList.toggle('mobile-hidden');
+// });
 
 let currentChat;
 

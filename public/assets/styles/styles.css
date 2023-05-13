@@ -178,7 +178,8 @@ ul {
 .chat-column-right-row-one {
   display: flex;
   justify-content: space-between;
-  padding: 1rem;
+  padding: 5px 1rem;
+  align-items: center;
   position: sticky;
   background-color: #f8f9fa;
 }

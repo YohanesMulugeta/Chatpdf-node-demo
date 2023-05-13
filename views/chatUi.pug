@@ -23,7 +23,7 @@ html(lang="en")
         script(defer src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js", integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p", crossorigin="anonymous")
         // Markdown
         script(src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/13.0.1/markdown-it.min.js" integrity="sha512-SYfDUYPg5xspsG6OOpXU366G8SZsdHOhqk/icdrYJ2E/WKZxPxze7d2HD3AyXpT7U22PZ5y74xRpqZ6A2bJ+kQ==" crossorigin="anonymous" referrerpolicy="no-referrer")
-        script(defer src="https://cdn.jsdelivr.net/npm/uuid@9.0.0/dist/index.min.js")
+        
     body
         // Main container
         dvi.chat-main-container
@@ -69,22 +69,24 @@ html(lang="en")
                     span.button-dropsection.hidden
                         i.bi.bi-list
                     .chat-title Title
-                    span.button-tools.hidden
-                        i.bi.bi-three-dots-vertical
-                    // tools containor
-                    .chat-tools.mobile-hidden
-                        .chat-tools-item
-                            span
-                                i.bi.bi-download
-                            span.chat-tools-name Download
-                        .chat-tools-item
-                            span
-                                i.bi.bi-arrow-counterclockwise
-                            span.chat-tools-name Reset
-                        .chat-tools-item
-                            span
-                                i.bi.bi-archive
-                            span.chat-tools-name Delete
+                    //- button.chat-with-all.btn.btn-primary
+                    //-     | Chat With All
+                    //- span.button-tools.hidden
+                    //-     i.bi.bi-three-dots-vertical
+                    //- // tools containor
+                    //- .chat-tools.mobile-hidden
+                    //-     .chat-tools-item
+                    //-         span
+                    //-             i.bi.bi-download
+                    //-         span.chat-tools-name Download
+                    //-     .chat-tools-item
+                    //-         span
+                    //-             i.bi.bi-arrow-counterclockwise
+                    //-         span.chat-tools-name Reset
+                    //-     .chat-tools-item
+                    //-         span
+                    //-             i.bi.bi-archive
+                    //-         span.chat-tools-name Delete
                 // Chat area
                 .chat.chat-column-right-row-two
                     // chat messages containor
