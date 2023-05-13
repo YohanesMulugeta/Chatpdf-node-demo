@@ -102,10 +102,12 @@ class Chat {
 
   //create new html instance for BOT message
   addBotMessage(resultText) {
+    const formatedText = window.markdownit().render(resultText);
+
     document.querySelector('.last-bot-message')?.classList.remove('last-bot-message');
     const botDiv = document.createElement('div');
     botDiv.className = 'message text-bot last-bot-message';
-    botDiv.innerHTML = `<span class="text generated-bot-text typing-dots">${resultText} </span>`;
+    botDiv.innerHTML = `<span class="text generated-bot-text typing-dots">${formatedText} </span>`;
     // botDiv.classList.add('last-bot-message');
     this.chatContainer.appendChild(botDiv);
     this.chatContainer.scrollTop = this.chatContainer.scrollHeight;
@@ -114,7 +116,8 @@ class Chat {
 
   replaceTypingEffect(botText) {
     const lastBotMessage = document.querySelector('.last-bot-message');
-    lastBotMessage.textContent = botText;
+    const formatedText = window.markdownit().render(botText);
+    lastBotMessage.textContent = formatedText;
     this.chatContainer.scrollTop = this.chatContainer.scrollHeight;
     lastBotMessage.scrollIntoView();
   }

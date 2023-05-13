@@ -4,7 +4,6 @@ import Chat from './chat.js';
 import showError from '../resusables/showError.js';
 import makeRequest from '../resusables/fetch.js';
 
-const sideBar = document.querySelector('.chat-column-left-row-one');
 const loaderChatBtn = document.querySelector('.loader-chatbtns ');
 
 export default function renderChatBtns(e) {
@@ -12,9 +11,16 @@ export default function renderChatBtns(e) {
 
   if (!chats) return;
 
+  const parent = getSidebar().closest('.chat-column-left-row-one');
+
+  getSidebar().remove();
+
+  parent.insertAdjacentHTML('beforeend', `<div class='chat-btn-container'> </div>`);
+  console.log(parent);
+
   const parsed = Object.entries(JSON.parse(chats));
 
-  parsed.sort((a, b) => +b[1].lastUpdatedDate - +a[1].lastUpdatedDate);
+  parsed.sort((a, b) => +a[1].lastUpdatedDate - +b[1].lastUpdatedDate);
 
   loaderChatBtn.remove();
 
@@ -113,8 +119,8 @@ async function deleteChat(btn, docname, intervalId) {
 }
 
 export function renderBtn(chat) {
-  sideBar.insertAdjacentHTML(
-    'beforeend',
+  getSidebar().insertAdjacentHTML(
+    'afterbegin',
     `
       <div class='chat-btn-delete-container' data-docname=${chat[0]} data-chattitle=${chat[1].chatTitle}>
         <button class='btn-sample-pdf btn btn-primary btn-chat'>
@@ -125,4 +131,8 @@ export function renderBtn(chat) {
         </button>
       </div>`
   );
+}
+
+function getSidebar() {
+  return document.querySelector('.chat-btn-container');
 }
