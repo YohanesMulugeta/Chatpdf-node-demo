@@ -1,6 +1,5 @@
 import makeRequest from '../resusables/fetch.js';
 import showError from '../resusables/showError.js';
-import { showProgress, removeProgress } from '../resusables/showProgressBtn.js';
 import renderChatBtns from './renderChats.js';
 
 class Chat {
@@ -123,25 +122,11 @@ class Chat {
     const lastBotMessage = document.querySelector('.last-bot-message');
     const formatedText = window.markdownit().render(botText);
     lastBotMessage.innerHTML = formatedText;
-    console.log(sourceDocuments);
+
     if (sourceDocuments)
       sourceDocuments.forEach((source, i) => {
         const formatedPageContent = window.markdownit().render(source.pageContent);
-        lastBotMessage.insertAdjacentHTML(
-          'beforeend',
-          `<div id='accordionExample-${i}' class='accordion'>
-            <div class='accordion-item'>
-              <h2 id='heading-${i}' class='accordion-header'>
-                <button class='button accordion-button' type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${i}" aria-expanded="false" aria-controls="collapse-${i}">
-                  Source ${i + 1}
-                </button>
-              </h2>
-              <div id='collapse-${i}' class='accordion-collapse collapse' aria-labelledby="heading-${i}" data-bs-parent="#accordionExample-${i}">
-                <div class='accordion-body'>${formatedPageContent}</div>
-              </div>
-            </div>
-          </div>`
-        );
+        this.renderSourceAccordion(formatedPageContent, lastBotMessage, i);
       });
 
     this.chatContainer.scrollTop = this.chatContainer.scrollHeight;
@@ -180,6 +165,27 @@ class Chat {
     if (!nextState) return this.storeStateToLocal(true);
 
     this.state = nextState;
+  }
+
+  renderSourceAccordion(source, botMessage, i) {
+    const containerId = `c-${Date.now()}`;
+    const headingId = `h-${Date.now()}`;
+    const contentId = `co-${Date.now()}`;
+    botMessage.insertAdjacentHTML(
+      'beforeend',
+      `<div id='${containerId}' class='accordion'>
+            <div class='accordion-item'>
+              <h2 id='${headingId}' class='accordion-header'>
+                <button class='button accordion-button' type="button" data-bs-toggle="collapse" data-bs-target="#${contentId}" aria-expanded="false" aria-controls="${contentId}">
+                  Source ${i + 1}
+                </button>
+              </h2>
+              <div id='${contentId}' class='accordion-collapse collapse' aria-labelledby='${headingId}' data-bs-parent="#${containerId}">
+                <div class='accordion-body'>${source}</div>
+              </div>
+            </div>
+          </div>`
+    );
   }
 }
 

@@ -16,7 +16,6 @@ export default function renderChatBtns(e) {
   getSidebar().remove();
 
   parent.insertAdjacentHTML('beforeend', `<div class='chat-btn-container'> </div>`);
-  console.log(parent);
 
   const parsed = Object.entries(JSON.parse(chats));
 
