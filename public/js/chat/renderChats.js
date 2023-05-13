@@ -9,6 +9,7 @@ const loaderChatBtn = document.querySelector('.loader-chatbtns ');
 
 export default function renderChatBtns(e) {
   const chats = localStorage.getItem('chatsChatpdf');
+
   if (!chats) return;
 
   const parsed = Object.entries(JSON.parse(chats));
@@ -18,18 +19,7 @@ export default function renderChatBtns(e) {
   loaderChatBtn.remove();
 
   parsed.forEach((chat) => {
-    sideBar.insertAdjacentHTML(
-      'beforeend',
-      `
-      <div class='chat-btn-delete-container' data-docname=${chat[0]} data-chattitle=${chat[1].chatTitle}>
-        <button class='btn-sample-pdf btn btn-primary btn-chat'>
-          <i class='bi bi-file-earmark-pdf'></i> ${chat[1].chatTitle}
-        </button>
-        <button class='btn-danger btn btn-delete-chat'>
-          <i class='bi bi-archive'></i> 
-        </button>
-      </div>`
-    );
+    renderBtn(chat);
   });
 }
 
@@ -120,4 +110,19 @@ async function deleteChat(btn, docname, intervalId) {
   setTimeout(() => {
     container.remove();
   }, 1500);
+}
+
+export function renderBtn(chat) {
+  sideBar.insertAdjacentHTML(
+    'beforeend',
+    `
+      <div class='chat-btn-delete-container' data-docname=${chat[0]} data-chattitle=${chat[1].chatTitle}>
+        <button class='btn-sample-pdf btn btn-primary btn-chat'>
+          <i class='bi bi-file-earmark-pdf'></i> ${chat[1].chatTitle}
+        </button>
+        <button class='btn-danger btn btn-delete-chat'>
+          <i class='bi bi-archive'></i> 
+        </button>
+      </div>`
+  );
 }

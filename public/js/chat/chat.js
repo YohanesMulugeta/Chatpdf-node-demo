@@ -1,6 +1,7 @@
 import makeRequest from '../resusables/fetch.js';
 import showError from '../resusables/showError.js';
 import { showProgress, removeProgress } from '../resusables/showProgressBtn.js';
+import renderChatBtns from './renderChats.js';
 
 class Chat {
   promptInput = document.getElementById('user-input');
@@ -36,6 +37,7 @@ class Chat {
     this.promptInput.addEventListener('keyup', this.handleEnterKey);
 
     this.populateHistory();
+    renderChatBtns();
   }
 
   populateHistory() {

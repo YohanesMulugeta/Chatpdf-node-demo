@@ -36,14 +36,6 @@ const upload = multer({ storage: storage, fileFilter: multerFilter });
 // --------------------- UPLOAD PDF
 exports.uploadPdf = upload.single('document');
 
-// ------------------------ Check Token LImit
-exports.checkTokenLimit = function (req, res, next) {
-  if (req.user.tokenLimit <= 0)
-    return next(new AppError('You dont have enough token to perform this action.', 400));
-
-  next();
-};
-
 // ----------------------- Store to Pine Cone
 exports.toPinecone = catchAsync(async function (req, res, next) {});
 
@@ -55,16 +47,10 @@ exports.processDocument = catchAsync(async function (req, res, next) {
 
   const fileNameOnPine = await loadPdf(file, req.fileName);
 
-  // store the new chat
-  // const user = await User.findById(req.user._id).select('+chats.chatHistory');
-  // user.chats.push({ name: originalName, vectorName: fileNameOnPine });
-  // const updatedUser = await user.save({ validateBeforeSave: false });
-
   res.status(200).json({
     status: 'success',
     docName: fileNameOnPine,
     chatTitle: originalName,
-    // chatId: updatedUser.chats.slice(-1)[0]._id,
   });
 });
 
@@ -76,7 +62,6 @@ exports.chat = catchAsync(async function (req, res, next) {
   if (!question || question.trim() === '')
     return next(new AppError('You have to provide question!', 400));
 
-  // const nameSpace = await req.user.chats.id(chatId).vectorName;
   // OPEN-AI recommendation to replace new lines with space
   const sanitizedQuestion = question.replace('/n', ' ').trim();
   const pineconeIndex = pineconeClient.Index(process.env.PINECONE_INDEX_NAME);
@@ -88,7 +73,6 @@ exports.chat = catchAsync(async function (req, res, next) {
   });
 
   // Get chat history
-  // const user = await User.findById(req.user._id).select('+chats.chatHistory');
   const chatHistory = history.slice(-5);
 
   const chain = makeChain(vectorStore);
@@ -99,12 +83,6 @@ exports.chat = catchAsync(async function (req, res, next) {
     chat_history: chatHistory,
   });
 
-  // Update User
-  // user.chats
-  //   .id(chatId)
-  //   .chatHistory.push([`Question: ${question}`, `Answer: ${response.text}`]);
-  // user.updateChatModifiedDate(chatId);
-
   res.status(200).json({ status: 'success', data: { response } });
 });
 
@@ -114,7 +92,7 @@ exports.deleteChat = catchAsync(async function (req, res, next) {
 
   const pineconeIndex = pineconeClient.Index(process.env.PINECONE_INDEX_NAME);
 
-  pineconeIndex.delete1({ deleteAll: true, namespace: vectorName });
+  await pineconeIndex.delete1({ deleteAll: true, namespace: vectorName });
 
   res.status(203).json({ message: 'success' });
 });
