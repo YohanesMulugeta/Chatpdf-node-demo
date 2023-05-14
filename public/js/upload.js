@@ -3,7 +3,7 @@ import { showProgress, removeProgress } from './resusables/showProgressBtn.js';
 import { showAlert } from './resusables/alert.js';
 import makeRequest from './resusables/fetch.js';
 import Chat from './chat/chat.js';
-import { setCurrentChat } from './scriptDemo.js';
+import { handleLeftColHide, setCurrentChat } from './scriptDemo.js';
 
 const loader = document.querySelector('.loader-upload')?.querySelector('.loader');
 const input = document.querySelector('input[type="file"]');
@@ -21,11 +21,16 @@ export default async function fetchAndDisplay(fileContainer, isFile = false) {
     try {
       // progress indicators
       loader.style.display = 'block';
+      const { type } = file;
+      if (type !== 'application/pdf' && type !== 'text/plain')
+        throw new Error(`This file format ${type} is not supported.`);
+
       const text =
-        file.type === 'application/pdf'
+        type === 'application/pdf'
           ? await extractTextFromPdf(file)
           : await extractTextFromTxt(file);
 
+      // return console.log(file.type);
       //   console.log(file);
       //   dataTobeSent.text = text;
       const dataTobeSent = {
@@ -47,7 +52,7 @@ export default async function fetchAndDisplay(fileContainer, isFile = false) {
 
       // Progress Indicators
       showAlert('success', 'Successful on uploading your document!');
-
+      handleLeftColHide();
       loader.style.display = 'none';
       input.removeAttribute('disabled');
       setTimeout(() => {

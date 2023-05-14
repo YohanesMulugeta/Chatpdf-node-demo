@@ -8,7 +8,7 @@ const btnDropSection = document.querySelector('.button-dropsection');
 
 const chatColumnLeft = document.querySelector('.chat-column-left');
 const chatTools = document.querySelector('.chat-tools');
-const returnToChat = document.querySelector('.close-btn');
+const leftColumn = document.querySelector('.chat-column-left');
 const sideBar = document.querySelector('.chat-column-left-row-one');
 
 //DRAG AND DROP || UPLOAD FILE
@@ -21,13 +21,8 @@ const fileInfo = document.querySelector('.file-info');
 btnDropSection.addEventListener('click', () => {
   chatColumnLeft.classList.remove('mobile-hidden');
 });
-returnToChat.addEventListener('click', () => {
-  chatColumnLeft.classList.add('mobile-hidden');
-});
 
-// btnTools.addEventListener('click', () => {
-//   chatTools.classList.toggle('mobile-hidden');
-// });
+leftColumn.addEventListener('click', handleLeftColHide);
 
 let currentChat;
 
@@ -63,3 +58,9 @@ export const setCurrentChat = (chat) => {
   currentChat?.collectGarbage();
   currentChat = chat;
 };
+
+export function handleLeftColHide(e) {
+  if (e) if (!e.target.closest('.btn-chat') && !e.target.closest('.close-btn')) return;
+
+  chatColumnLeft.classList.add('mobile-hidden');
+}

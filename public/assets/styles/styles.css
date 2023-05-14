@@ -97,7 +97,7 @@ ul {
 .chat .messages-chat .text-bot {
   padding: 6px 12px;
   border-radius: 7px;
-  width: clamp(300px, 80%, 700px);
+  width: clamp(340px, 80%, 700px);
 }
 
 .online {
@@ -186,7 +186,7 @@ ul {
 .chat-column-right-row-two {
   background: #fff;
   margin: 0 auto;
-  width: clamp(340px, 80%, 760px);
+  width: clamp(380px, 85%, 700px);
 
   overflow: auto;
   -ms-overflow-style: none; /* IE and Edge */

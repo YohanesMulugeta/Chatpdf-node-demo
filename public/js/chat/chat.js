@@ -43,7 +43,7 @@ class Chat {
     const loader = document.querySelector('.loader-messages');
     if (this.state.history.length === 0) {
       this.addBotMessage(
-        `Hello, I am here to help assist you with any question related to the document you uploaded`
+        `Hello, I am here to help assist you with any question related to the document: ${this.state?.chatTitle}`
       );
     } else {
       this.state.history.forEach((hist) => {
@@ -87,7 +87,11 @@ class Chat {
 
       this.replaceTypingEffect(data.response.text, data.response.sourceDocuments);
     } catch (err) {
+      this.replaceTypingEffect('Something went wron. Please Try Again!');
       showError(err, this.generateBtn, 'Try Again!');
+      setTimeout(() => {
+        this.generateBtn.innerHTML = `<i class='bi bi-send'></i>`;
+      });
       // location.reload(true);
     }
   }
@@ -97,7 +101,7 @@ class Chat {
     userDiv.className = 'message text-only text-user';
     userDiv.innerHTML = `<div class="user-input"><span class="text ">${message}</span></div>`;
     this.chatContainer.appendChild(userDiv);
-    this.chatContainer.scrollTop = this.chatContainer.scrollHeight;
+    userDiv.scrollIntoView();
   }
 
   //create new html instance for BOT message
