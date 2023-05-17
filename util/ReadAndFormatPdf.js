@@ -68,10 +68,10 @@ async function spiltText(text, check = true) {
 }
 
 async function storeToPinecone(docs, pineClient) {
-  // await client.init({
-  //   apiKey: process.env.PINECONE_API_KEY,
-  //   environment: process.env.PINECONE_ENVIRONMENT,
-  // });
+  await client.init({
+    apiKey: process.env.PINECONE_API_KEY,
+    environment: process.env.PINECONE_ENVIRONMENT,
+  });
 
   const pineconeIndex = client.Index(process.env.PINECONE_INDEX_NAME);
   console.log('init success');
