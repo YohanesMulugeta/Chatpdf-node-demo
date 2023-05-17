@@ -11,7 +11,7 @@ const openai = new OpenAIApi(configuration);
 
 const User = require('../model/userModel');
 
-const { pineconeClient, loadPdf } = require('../util/ReadAndFormatPdf');
+const { client, loadPdf } = require('../util/ReadAndFormatPdf');
 const makeChain = require('../util/makeChain');
 const catchAsync = require('../util/catchAsync');
 const multerFilter = require('../util/multerFilter');
@@ -64,7 +64,11 @@ exports.chat = catchAsync(async function (req, res, next) {
 
   // OPEN-AI recommendation to replace new lines with space
   const sanitizedQuestion = question.replace('/n', ' ').trim();
-  const pineconeIndex = pineconeClient.Index(process.env.PINECONE_INDEX_NAME);
+  const newClient = await client.init({
+    apiKey: process.env.PINECONE_API_KEY,
+    environment: process.env.PINECONE_ENVIRONMENT,
+  });
+  const pineconeIndex = newClient.Index(process.env.PINECONE_INDEX_NAME);
 
   // vectore store
   const vectorStore = await PineconeStore.fromExistingIndex(new OpenAIEmbeddings(), {
@@ -90,7 +94,12 @@ exports.chat = catchAsync(async function (req, res, next) {
 exports.deleteChat = catchAsync(async function (req, res, next) {
   const { vectorName } = req.params;
 
-  const pineconeIndex = pineconeClient.Index(process.env.PINECONE_INDEX_NAME);
+  const newClient = await client.init({
+    apiKey: process.env.PINECONE_API_KEY,
+    environment: process.env.PINECONE_ENVIRONMENT,
+  });
+
+  const pineconeIndex = newClient.Index(process.env.PINECONE_INDEX_NAME);
 
   await pineconeIndex.delete1({ deleteAll: true, namespace: vectorName });
 
