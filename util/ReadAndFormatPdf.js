@@ -42,10 +42,11 @@ exports.loadPdf = async function loadPdf(file, isFile, check = true) {
   }
 
   const splitted = await spiltText(text, check);
-
+  console.log('end-split');
   //  store in the pinecone
   const fileNameOnPine = await storeToPinecone(splitted);
 
+  console.log(fileNameOnPine);
   //  return the pinecone name_space for the vectors
   return fileNameOnPine;
   // if (!isFile) return spiltText(file, check);
@@ -67,11 +68,6 @@ async function spiltText(text, check = true) {
 }
 
 async function storeToPinecone(docs) {
-  await client.init({
-    apiKey: process.env.PINECONE_API_KEY,
-    environment: process.env.PINECONE_ENVIRONMENT,
-  });
-
   const pineconeIndex = client.Index(process.env.PINECONE_INDEX_NAME);
 
   const fileNameOnPine = `pine-${Date.now()}`;
