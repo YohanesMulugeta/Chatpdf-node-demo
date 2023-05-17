@@ -64,11 +64,11 @@ exports.chat = catchAsync(async function (req, res, next) {
 
   // OPEN-AI recommendation to replace new lines with space
   const sanitizedQuestion = question.replace('/n', ' ').trim();
-  const newClient = await client.init({
+  await client.init({
     apiKey: process.env.PINECONE_API_KEY,
     environment: process.env.PINECONE_ENVIRONMENT,
   });
-  const pineconeIndex = newClient.Index(process.env.PINECONE_INDEX_NAME);
+  const pineconeIndex = client.Index(process.env.PINECONE_INDEX_NAME);
 
   // vectore store
   const vectorStore = await PineconeStore.fromExistingIndex(new OpenAIEmbeddings(), {
@@ -94,12 +94,12 @@ exports.chat = catchAsync(async function (req, res, next) {
 exports.deleteChat = catchAsync(async function (req, res, next) {
   const { vectorName } = req.params;
 
-  const newClient = await client.init({
+  await client.init({
     apiKey: process.env.PINECONE_API_KEY,
     environment: process.env.PINECONE_ENVIRONMENT,
   });
 
-  const pineconeIndex = newClient.Index(process.env.PINECONE_INDEX_NAME);
+  const pineconeIndex = client.Index(process.env.PINECONE_INDEX_NAME);
 
   await pineconeIndex.delete1({ deleteAll: true, namespace: vectorName });
 

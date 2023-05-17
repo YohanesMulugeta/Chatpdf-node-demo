@@ -9,6 +9,7 @@ const AppError = require('./AppError');
 const client = new PineconeClient();
 exports.pineconeClient = client;
 exports.client = client;
+
 (async () => {
   await client.init({
     apiKey: process.env.PINECONE_API_KEY,
@@ -66,11 +67,12 @@ async function spiltText(text, check = true) {
 }
 
 async function storeToPinecone(docs) {
-  const newClient = await client.init({
+  await client.init({
     apiKey: process.env.PINECONE_API_KEY,
     environment: process.env.PINECONE_ENVIRONMENT,
   });
-  const pineconeIndex = newClient.Index(process.env.PINECONE_INDEX_NAME);
+
+  const pineconeIndex = client.Index(process.env.PINECONE_INDEX_NAME);
 
   const fileNameOnPine = `pine-${Date.now()}`;
 
