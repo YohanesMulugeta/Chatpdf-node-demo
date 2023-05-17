@@ -5,12 +5,11 @@ body {
   color: #555;
   /* overflow: hidden; */
 }
-p {
+.chat-main-container p {
   line-height: 22px;
   letter-spacing: normal;
 }
-
-ul {
+.chat-main-container ul {
   padding: 0;
 }
 
@@ -100,16 +99,6 @@ ul {
   width: clamp(340px, 80%, 700px);
 }
 
-.online {
-  position: relative;
-  top: 30px;
-  left: 35px;
-  width: 13px;
-  height: 13px;
-  background-color: #8bc34a;
-  border-radius: 13px;
-  border: 3px solid var(--clr-bcg);
-}
 /* width */
 ::-webkit-scrollbar {
   width: 1px;

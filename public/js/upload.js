@@ -81,7 +81,7 @@ async function extractTextFromPdf(file) {
 
   const textContent = [];
 
-  if (pdfDocument.numPages > 50) throw new Error('Please dont use large pdfs. Thank you');
+  // if (pdfDocument.numPages > 50) throw new Error('Please dont use large pdfs. Thank you');
 
   for (let i = 1; i <= pdfDocument.numPages; i++) {
     const page = await pdfDocument.getPage(i);
