@@ -64,10 +64,7 @@ exports.chat = catchAsync(async function (req, res, next) {
 
   // OPEN-AI recommendation to replace new lines with space
   const sanitizedQuestion = question.replace('/n', ' ').trim();
-  await client.init({
-    apiKey: process.env.PINECONE_API_KEY,
-    environment: process.env.PINECONE_ENVIRONMENT,
-  });
+
   const pineconeIndex = client.Index(process.env.PINECONE_INDEX_NAME);
 
   // vectore store
@@ -93,11 +90,6 @@ exports.chat = catchAsync(async function (req, res, next) {
 // ------------------- delete chat
 exports.deleteChat = catchAsync(async function (req, res, next) {
   const { vectorName } = req.params;
-
-  await client.init({
-    apiKey: process.env.PINECONE_API_KEY,
-    environment: process.env.PINECONE_ENVIRONMENT,
-  });
 
   const pineconeIndex = client.Index(process.env.PINECONE_INDEX_NAME);
 
