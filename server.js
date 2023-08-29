@@ -1,17 +1,22 @@
 const dotenv = require('dotenv');
 dotenv.config({ path: `${__dirname}/config.env` });
 
+const mongoose = require('mongoose');
 const app = require('./app');
-
-const { pineconeClient, loadPdf } = require('./util/ReadAndFormatPdf');
 
 app.on('uncaughtException', (err) => {
   console.log('ERRROR UNCAUGHT EXCEPTION', err);
   // process.exit();
 });
 
+const db = process.env.DB.replace('<password>', process.env.DB_PASSWORD);
+
 (async () => {
   try {
+    await mongoose.connect(db);
+
+    console.log('Database connection successfull');
+
     const port = process.env.PORT || 8000;
     app.listen(port, () => {
       console.log(`App Listning to port: ${port}`);

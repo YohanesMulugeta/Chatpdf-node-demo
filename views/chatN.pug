@@ -1,0 +1,68 @@
+mixin chatBtn(chat)
+    .chat-btn-delete-container(data-chatId=`${chat._id}`)
+        .btn-chat-delete
+            button.btn-sample-pdf.btn.btn-primary.btn-chat
+                i.bi.bi-file-earmark-pdf
+                p= chat.name
+            button.btn-danger.btn.btn-delete-chat
+                i.bi.bi-archive
+                
+            
+        //- .chat-tools
+        //-     buton.btn-add-document.btn.btn-tool
+        //-         i.bi.bi-journal-plus
+        //-         input#add-file(type="file", hidden='', accept='.pdf,.txt')
+        //-     buton.btn-reset-chat.btn.btn-tool
+        //-         i.bi.bi-arrow-counterclockwise
+           
+            
+            
+doctype html
+html(lang="en")
+    head
+        include _head
+        link(rel="stylesheet", href="/assets/styles/chatN.css")
+        script(src="/js/chat/chatN.js" type='module') 
+        script(src="/js/chat/chatBtns.js" type='module') 
+
+    body
+        section.chat-upload-container
+            .upload-chat-btn-container.mobile-hidden 
+                .pdf-uploader
+                    .drop-zone
+                        p#drop-description
+                            i.bi.bi-cloud-arrow-up
+                            | Drag and drop a file here or click to
+                            | upload
+                        input#file(type="file", hidden='', accept=".pdf,.txt,.doc,.docx,.csv,.epub")
+                        .d-flex.justify-content-center.loader-upload
+                            .spinner-grow.text-primary.loader(role="status")
+                    .file-info
+                
+                .chat-btn-container.hide-scroll-bar
+                    -for(let i = 0; i< chats.length; i++)
+                        +chatBtn(chats[i])
+                    
+
+            .chat-container
+                .messages-container
+                    .d-flex.justify-content-center.chat-loader.hidden
+                        .spinner-grow.text-primary.loader(role="status") 
+                        
+                .input-send-container
+                    input#user-input.form-control.generate-input(type="text", placeholder="Upload file or select chat to get started" disabled)
+                    button#submit-button.btn-ask.btn.btn-default.btn-primary(type="button" disabled)
+                        i.bi.bi-send
+        
+        button.btn.btn-open-sidebar.hidden-desktop.btn-outline-primary
+            i.bi.bi-arrow-bar-right
+
+    // Chat Documents
+    #chat-documents.modal.fade(tabindex="-1", aria-labelledby="exampleModalLabel", aria-hidden="true")
+        .modal-dialog.apikey-modal
+            .modal-content
+                .modal-header
+                    h5#exampleModalLabel.modal-title Documents You Uploaded
+                    button.btn-close(type="button", data-bs-dismiss="modal", aria-label="Close")
+                .modal-body
+                    .chat-documents-body

@@ -1,7 +1,7 @@
-import { showProgress, removeProgress } from '../showProgressBtn.js';
-import { showAlert } from '../alert.js';
+import { showProgress, removeProgress } from '../reusables/showProgressBtn.js';
+import { showAlert } from '../reusables/alert.js';
 import { handleDocDelete } from './handleDeleteYes.js';
-import showError from '../showError.js';
+import showError from '../reusables/showError.js';
 import garbageCollector from './modalEventSetterRemover.js';
 
 const modalDelete = document.getElementById('deleteModal');
@@ -14,48 +14,51 @@ const formEditUser = document.querySelector('.form-edit-user');
 const modalEditUser = document.querySelector('.modal-edit-user');
 const modalEditTitle = modalEditUser?.querySelector('.modal-title');
 const emailIn = modalEditUser?.querySelector('#email');
-const passwordIn = modalEditUser?.querySelector('#password');
 const planIn = modalEditUser?.querySelector('#plan');
+const conversationalTokenIn = modalEditUser?.querySelector('#conversationTokens');
+const uploadTokenIn = modalEditUser?.querySelector('#uploadTokens');
+const emailVerifiedIn = modalEditUser?.querySelector('#emailVerified');
 
 const nameIn = modalEditUser?.querySelector('#name');
 const roleIn = modalEditUser?.querySelector('#role');
 
-const btnSaveChanges = modalEditUser?.querySelector('.btn-save-changes');
-
 // ------------------------------ EDIT USER
-async function handleSaveChanges(e) {
+export async function handleSaveChanges(e) {
   try {
     e.preventDefault();
+    if (!e.target.closest('.btn-update-input')) return;
 
-    const email = emailIn.value.trim() ? emailIn.value.trim() : this.email;
-    const name = nameIn.value.trim() ? nameIn.value.trim() : this.name;
-    const password = passwordIn.value.trim() ? passwordIn.value.trim() : undefined;
-    const role = roleIn.value.trim() ? roleIn.value.trim().toLowerCase() : this.role;
-    const plan = planIn.value.trim() ? planIn.value.trim() : this.paln;
+    const inputField = e.target
+      .closest('.update-input-container')
+      ?.querySelector('.form-control');
+    const inputFieldId = inputField.id;
+    const inputFieldValue =
+      inputFieldId === 'emailVerified'
+        ? inputField.value === 'false'
+          ? false
+          : true
+        : inputField.value;
 
-    // show progress btn
-    showProgress(btnSaveChanges);
+    showProgress(e.target, ' ');
 
-    const updated = await axios.patch(`/api/v1/users/${this._id}`, {
-      email,
-      plan,
-      name,
-      password,
-      role,
+    const updated = await axios.patch(this.endpoint, {
+      [inputFieldId]: inputFieldValue,
     });
-
-    formEditUser.removeEventListener('submit', this.handler);
 
     // show success alert and remobe the progress button
     showAlert('success', 'Update Successful');
-    removeProgress(btnSaveChanges, 'Successfuly updated');
+    removeProgress(e.target, `<i class="bi bi-check-circle"></i>`);
+    e.target.classList.remove('btn-primary');
+    e.target.style.backgroundColor = '#51cf66';
+    e.target.style.color = '#fff';
 
-    // Reload after some time
+    // Remove the green
     setTimeout(() => {
-      location.reload(true);
+      e.target.classList.add('btn-primary');
+      e.target.innerHTML = 'Update';
     }, 3000);
   } catch (err) {
-    showError(err, btnSaveChanges, 'Save Changes');
+    showError(err, e.target, 'Update');
   }
 }
 
@@ -77,15 +80,18 @@ export function handleUserDeleteAndEdit(e) {
 
   modalEditTitle.innerHTML = `Edit User: ${user.name}`;
   nameIn.value = user.name;
+  emailVerifiedIn.value = user.emailVerified === false ? 'false' : 'true';
   emailIn.value = user.email;
   planIn.value = user.subscription.name;
   roleIn.value = user.role;
+  conversationalTokenIn.value = user.conversationTokens.toFixed(0);
+  uploadTokenIn.value = user.uploadTokens.toFixed(0);
 
   // use garbage collector
   garbageCollector(modalEditUser, {
-    bindOpt: { ...user },
+    bindOpt: { ...user, endpoint: `/api/v1/users/${user._id}` },
     target: formEditUser,
     handler: handleSaveChanges,
-    event: 'submit',
+    event: 'click',
   });
 }

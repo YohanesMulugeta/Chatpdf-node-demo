@@ -1,5 +1,5 @@
-import { showProgress, removeProgress } from '../showProgressBtn.js';
-import { showAlert } from '../alert.js';
+import { showProgress, removeProgress } from '../reusables/showProgressBtn.js';
+import { showAlert } from '../reusables/alert.js';
 import garbageCollector from './modalEventSetterRemover.js';
 
 const btnDeleteYes = document.querySelector('.btn-delete-yes');

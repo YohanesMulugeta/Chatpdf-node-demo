@@ -1,0 +1,374 @@
+body {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  color: #555;
+  /* overflow: hidden; */
+}
+
+.alert-custom {
+  position: fixed;
+  top: 10px;
+  right: 50%;
+
+  transform: translateX(50%);
+  z-index: 9999;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.hide-scroll-bar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.hide-scroll-bar::-webkit-scrollbar {
+  display: none;
+}
+
+#scroll-top {
+  width: clamp(340px, 100%, 1340px);
+  margin: 0 auto;
+}
+
+/* ------- MAIN CONTAINER */
+.chat-upload-container {
+  margin: 0 auto;
+  height: 100vh;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.chat-upload-container {
+  line-height: 22px;
+  letter-spacing: 0.75px;
+}
+
+.upload-chat-btn-container,
+.chat-container {
+  height: 100%;
+}
+
+.upload-chat-btn-container {
+  padding: 10px;
+  width: 20%;
+  background-color: rgb(0, 24, 41);
+  min-height: 80vh;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 15px;
+}
+
+/* ------------ Drop zone */
+.drop-zone {
+  border: 2px dashed #ccc;
+  color: #fff;
+
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+}
+
+.drop-zone:hover {
+  border: 2px dashed #664949;
+}
+
+.drop-zone--active {
+  border-color: #000;
+}
+
+.loader-upload > .loader {
+  display: none;
+}
+
+/* ------------- lists of chat */
+.chat-btn-container {
+  display: flex;
+  gap: 10px;
+  flex-direction: column;
+  overflow-y: scroll;
+  min-height: 80vh;
+}
+
+.chat-btn-delete-container {
+  display: flex;
+  flex-direction: column;
+  /* gap: 5px; */
+  width: 100%;
+}
+
+.btn-chat-delete {
+  display: flex;
+  gap: 10px;
+}
+
+.chat-tools {
+  width: 80%;
+  display: flex;
+  align-items: center;
+  align-self: flex-end;
+  /* justify-content: space-between; */
+  gap: 10px;
+}
+
+.btn-tool {
+  /* height: 24px; */
+  color: #fff;
+
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transform: translateX(-20px);
+}
+
+.chat-tools.btn-reset-chat {
+  height: auto;
+  width: auto;
+}
+
+.chat-tools.btn-reset-chat:is(:hover)::after {
+  right: 10px;
+  font-weight: 600;
+  background: #fff;
+  width: 100px;
+}
+.btn-tool:is(:hover)::after {
+  position: absolute;
+  bottom: 110%;
+  font-size: 12px;
+  width: 200px;
+  color: #fff;
+}
+
+.btn-getchatbot:is(:hover)::after {
+  content: 'Get ChatBot';
+  color: #000;
+  font-weight: 600;
+}
+
+.btn-add-document:is(:hover)::after {
+  content: 'Add Document';
+  left: -60px;
+}
+
+.btn-reset-chat:is(:hover)::after {
+  content: 'Clear History';
+}
+
+.btn-download-chat:is(:hover)::after {
+  content: 'Download';
+}
+
+.btn-chat-documents:is(:hover)::after {
+  content: 'Documents';
+}
+
+.chat-documents-body {
+  width: 100%;
+  min-height: 200px;
+  background-color: #e5dbff;
+
+  padding: 7px;
+}
+
+.chat-documents-body > .spinner-container {
+  width: 100%;
+  margin-top: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-copy {
+  position: relative;
+}
+
+.btn-copy:is(:hover)::after {
+  position: absolute;
+  left: 120%;
+  top: 50%;
+  transform: translateY(-50%);
+  content: 'Copy';
+  color: #555;
+  font-size: 12px;
+}
+
+.success-deletion {
+  background-color: #20c997;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+}
+
+.btn-chat {
+  color: #ddd !important;
+  border-color: dodgerblue !important;
+  background: transparent !important;
+  width: 80%;
+  height: 36px;
+  display: flex;
+  gap: 10px;
+  overflow: hidden;
+  /* justify-content: space-between; */
+}
+
+.btn-chat:hover {
+  border-color: var(--turi) !important;
+  background-color: var(--turi) !important;
+  /* background-color: tomato !important; */
+  color: #fff !important;
+}
+
+.btn-chat:active,
+.btn-chat:focus {
+  box-shadow: none !important;
+}
+
+/* ------------------ Chat container messages and every thing */
+.chat-container {
+  width: 80%;
+  height: 100%;
+  background-color: rgb(242, 242, 255);
+
+  position: relative;
+}
+
+.input-send-container {
+  display: flex;
+  align-items: center;
+  width: 80%;
+
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding-top: 10px;
+}
+
+.messages-container {
+  width: 80%;
+  height: 93%;
+  margin: 0 auto;
+  background-color: #edf2ff;
+  overflow: scroll;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 25px 10px 25px 10px;
+}
+
+.message {
+  padding: 6px 12px;
+  border-radius: 5px;
+}
+
+.bot-message {
+  width: clamp(250px, 92%, 850px);
+  align-self: flex-start;
+  background-color: #f8f9fa;
+
+  padding-left: 25px;
+}
+
+.btn-chat:disabled {
+  background-color: #e03131 !important;
+}
+
+.loader-chat-bot > .loader {
+  width: 1rem;
+  height: 1rem;
+  display: inline-block;
+}
+.chat-loader {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.user-message {
+  width: clamp(250px, 80%, 600px);
+  background-color: #1777ff;
+  color: #fff;
+  align-self: flex-end;
+  padding-right: 25px;
+  /* max-width: 600px; */
+}
+
+.btn-open-sidebar {
+  position: fixed;
+  /* margin: 15px; */
+  left: 0;
+  top: 50%;
+  transform: translate(-30%, -50%);
+}
+
+/* #user-input {
+  width: 80%;
+} */
+
+.hidden-desktop {
+  display: none;
+}
+
+@media screen and (max-width: 900px) {
+  .mobile-hidden {
+    display: none !important;
+  }
+
+  .hidden-desktop {
+    display: block;
+  }
+
+  .btn-chat {
+    flex-grow: 1;
+  }
+
+  .hidden {
+    display: block;
+    cursor: pointer;
+  }
+
+  .open {
+    display: block !important;
+  }
+
+  .chat-container {
+    width: 100vw;
+  }
+
+  .messages-container {
+    width: 100%;
+    margin: 20px auto;
+  }
+  /* .input-group {
+    width: 85vw;
+  } */
+
+  .file-name-header {
+    font-size: 0.8rem;
+  }
+
+  .upload-chat-btn-container {
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+  }
+}

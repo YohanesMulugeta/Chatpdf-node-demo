@@ -1,0 +1,17 @@
+{
+  "name": "front-end",
+  "version": "1.0.0",
+  "description": "front-end bundling",
+  "source": "index.js",
+  "main": "main.js",
+  "scripts": {
+    "watch": "parcel watch",
+    "build": "parcel build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "yohanes",
+  "license": "ISC",
+  "devDependencies": {
+    "parcel": "^2.9.2"
+  }
+}
