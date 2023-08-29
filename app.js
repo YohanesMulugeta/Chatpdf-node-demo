@@ -35,7 +35,7 @@ if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 app.use(
   '/api',
   rateLimiter({
-    max: 30,
+    max: 120,
     windowMs: 120 * 60 * 1000,
     message: 'Too many request from this IP, please try again in an hour!',
   })
