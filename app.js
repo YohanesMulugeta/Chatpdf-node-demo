@@ -14,6 +14,7 @@ const expressWs = require('express-ws')(app);
 
 const pdfRouter = require('./routes/processPdfRouter');
 const chatRouter = require('./routes/chatRouter');
+const userRouter = require('./routes/userRouter');
 const viewRouter = require('./routes/viewRouter');
 const appErrorHandler = require('./controllers/errorController');
 const AppError = require('./util/AppError');
@@ -35,7 +36,7 @@ if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 app.use(
   '/api',
   rateLimiter({
-    max: 120,
+    max: 30,
     windowMs: 120 * 60 * 1000,
     message: 'Too many request from this IP, please try again in an hour!',
   })
@@ -45,9 +46,9 @@ app.use(compression());
 
 app.use(xss());
 app.use('/api/v1/pdf', pdfRouter);
+app.use('/api/v1/users', userRouter);
 app.use('/', viewRouter);
 
-// app.use('/api/v1/plans', planRouter);
 // app.use('/api/v1/features', featureRouter);
 // app.use('/admin', adminRouter);
 // app.use('/', viewRouter);

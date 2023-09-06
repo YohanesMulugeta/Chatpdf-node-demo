@@ -23,6 +23,7 @@
     "express-ws": "^5.0.2",
     "helmet": "^6.0.1",
     "hpp": "^0.2.3",
+    "jsonwebtoken": "^9.0.1",
     "langchain": "^0.0.63",
     "mammoth": "^1.5.1",
     "mongoose": "^7.4.5",

@@ -21,7 +21,7 @@ router
 router
   .route('/chat/:chatId')
   .get(pdfController.getPassChat, pdfController.getChat)
-  .patch(pdfController.getPassChat, pdfController.clearHistory)
+  // .post(pdfController.checkTokenLimit, chatController.chat)
   .delete(pdfController.getPassChat, pdfController.deleteChat);
 
 module.exports = router;

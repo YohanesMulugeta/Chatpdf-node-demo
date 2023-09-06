@@ -131,17 +131,6 @@ exports.addPdfIntoChat = catchAsync(async function (req, res, next) {
   // const file = req.
 });
 
-// ----------- Reset History
-exports.clearHistory = catchAsync(async function (req, res, next) {
-  const { chat } = req;
-
-  chat.chatHistory = [];
-
-  await chat.save({ validateBeforeSave: false });
-
-  res.status(200).json({ status: 'success', data: { chat } });
-});
-
 // ------------------- delete chat
 exports.deleteChat = catchAsync(async function (req, res, next) {
   const { indexName, nameSpace: namespace } = req.chat;
